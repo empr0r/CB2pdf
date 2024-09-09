@@ -7,6 +7,7 @@ This Python script converts `.cbz` and `.cbr` files to PDF format and moves the 
 - **Python 3**: Ensure that Python 3 is installed on your system.
 - **Pillow**: Python Imaging Library to handle image processing.
 - **rarfile**: Library to handle `.cbr` files.
+- **tqdm**: Library for displaying progress bars.
 
 ## Installation
 
@@ -20,6 +21,10 @@ This Python script converts `.cbz` and `.cbr` files to PDF format and moves the 
    - **rarfile**: Install using `pip`:
      ```bash
      pip install rarfile
+     ```
+   - **tqdm**: Install using `pip`:
+     ```bash
+     pip install tqdm
      ```
 
 2. **Clone the Repository**:
@@ -40,6 +45,10 @@ If `pip` is not an option or if you prefer to use system packages, follow these 
    - **rarfile**: Install using `paru` or another AUR helper:
      ```bash
      paru -S python-rarfile
+     ```
+   - **tqdm**: Install using `pacman`:
+     ```bash
+     sudo pacman -S python-tqdm
      ```
 
 2. **Clone the Repository**:
@@ -84,7 +93,10 @@ If `pip` is not an option or if you prefer to use system packages, follow these 
 4. **Batch Processing**:
    - The script processes files in batches to manage memory usage and system resources effectively. After processing a batch, it pauses to free up resources before moving on to the next batch.
 
-5. **File Management**:
+5. **Progress Bar**:
+   - The script uses `tqdm` to display a progress bar while processing each file, providing visual feedback on the conversion status.
+
+6. **File Management**:
    - After successfully converting a file, the script moves the original file to the `old` directory to keep the working directory organized.
 
 ## License
@@ -95,9 +107,6 @@ If `pip` is not an option or if you prefer to use system packages, follow these 
 
 - **ModuleNotFoundError: No module named 'PIL':**
   Ensure you have installed the Pillow library. Using `pip`, you can install it with:
-
-
-```markdown
   ```bash
   pip install pillow
   ```
@@ -116,5 +125,16 @@ If `pip` is not an option or if you prefer to use system packages, follow these 
   paru -S python-rarfile
   ```
 
+- **ModuleNotFoundError: No module named 'tqdm':**
+  Ensure you have installed the `tqdm` library. Using `pip`, you can install it with:
+  ```bash
+  pip install tqdm
+  ```
+  Alternatively, on Arch Linux, use:
+  ```bash
+  sudo pacman -S python-tqdm
+  ```
+
 - **Permission Denied:**
   Make sure you have executed the `chmod +x cbz_to_pdf.py` command before running the script.
+
