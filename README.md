@@ -60,19 +60,19 @@ If `pip` is not an option or if you prefer to use system packages, follow these 
 ## Usage
 
 1. **Prepare Your Directory**:
-   - Drop the `cbz_to_pdf.py` script into the directory containing your `.cbz` or `.cbr` files.
+   - Drop the `cb2pdf.py` script into the directory containing your `.cbz` or `.cbr` files.
 
 2. **Set Permissions**:
    - Open a terminal and navigate to the directory where you placed the script.
    - Make the script executable by running:
      ```bash
-     chmod +x cbz_to_pdf.py
+     chmod +x cb2pdf.py
      ```
 
 3. **Run the Script**:
    - Execute the script by running:
      ```bash
-     ./cbz_to_pdf.py
+     ./cb2pdf.py
      ```
 
    This will process all `.cbz` and `.cbr` files in the directory, convert them to PDF, and move the original files to a folder called `old`.
@@ -136,5 +136,5 @@ If `pip` is not an option or if you prefer to use system packages, follow these 
   ```
 
 - **Permission Denied:**
-  Make sure you have executed the `chmod +x cbz_to_pdf.py` command before running the script.
+  Make sure you have executed the `chmod +x cb2pdf.py` command before running the script.
 
