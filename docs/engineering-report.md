@@ -2,7 +2,9 @@
 
 ## Delivery and repository provenance
 
-The implementation is in `/home/empr0r/Projects/CB2pdf`, branch `operation-condor`. The unrelated older checkout in `Documents/GitHub/CBZ-to-pdf` remains untouched. Direct Git/pip networking was unavailable, so the requested public upstream was imported through the GitHub connector as local snapshot commit `2ec28de`, based on reviewed upstream head `19bc5a2`. This is explicitly a source snapshot, not a complete remote Git clone. Implementation commit: `796a341`.
+The canonical implementation is now in `/home/empr0r/Documents/GitHub/CB2pdf`, branch `operation-condor`, on top of the original upstream history. The user supplied this clean clone during engineering. The implementation and evidence commits were transferred onto upstream head `19bc5a2` as `d35c6c4` and `18661f3`; all 81 tests were rerun successfully in this checkout.
+
+Initial engineering took place in `/home/empr0r/Projects/CB2pdf` because direct Git/pip networking was unavailable. That workspace imported upstream through the GitHub connector as snapshot commit `2ec28de`, then recorded implementation `796a341`. It remains an audit copy containing the ignored private fixture artifacts. The canonical checkout now preserves the real upstream Git history instead of relying on that snapshot. The unrelated older checkout in `Documents/GitHub/CBZ-to-pdf` remains untouched.
 
 No remote writes, pushes, publication or releases were performed. The original MIT copyright remains in LICENSE; reference fork notices remain beside the retained benchmark snapshot. Historical reference formatting is intentionally excluded from whitespace checking rather than rewritten. All private manga fixtures and generated PDFs are ignored and excluded from the source distribution.
 

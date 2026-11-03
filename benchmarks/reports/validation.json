@@ -49,5 +49,9 @@
     "Dependencies source-loaded because network package resolution was unavailable",
     "Compressed/solid RAR5 not verified",
     "Memory accounting is not an OS-enforced cap"
-  ]
+  ],
+  "canonical_implementation_commit": "d35c6c4",
+  "canonical_repository": "/home/empr0r/Documents/GitHub/CB2pdf",
+  "upstream_history_preserved": true,
+  "migration_verification": "81 tests passed in the canonical checkout; source modules unchanged; executable launcher mode retained from upstream."
 }
