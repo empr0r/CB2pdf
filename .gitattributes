@@ -1,0 +1,2 @@
+# Preserve historical reference formatting rather than rewriting benchmark evidence.
+benchmarks/reference/*.py -whitespace
