@@ -1,0 +1,28 @@
+name: validation
+on: [push, pull_request]
+jobs:
+  test:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        python: ['3.11', '3.12', '3.13', '3.14']
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+      - name: Install optional renderer and RAR backend
+        if: runner.os == 'Linux'
+        run: sudo apt-get update && sudo apt-get install -y libarchive-tools poppler-utils
+      - run: python -m pip install -e '.[rar,dev,benchmark]'
+      - run: python -m unittest discover -v
+      - run: python -m mypy
+      - run: python -m pyflakes src tests benchmarks/compare.py benchmarks/real_world.py cb2pdf.py
+      - run: python -m pycodestyle --max-line-length=100 src tests benchmarks/compare.py benchmarks/real_world.py cb2pdf.py
+      - run: python -m autopep8 --recursive --diff --exit-code --max-line-length=100 src tests
+      - run: python -m autopep8 --diff --exit-code --max-line-length=100 benchmarks/compare.py benchmarks/real_world.py cb2pdf.py
+      - run: python -m build
+      - run: cb2pdf --version
+      - run: cb2pdf benchmark --quick --trials 1 --output benchmark-smoke.json

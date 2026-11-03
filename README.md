@@ -1,140 +1,86 @@
-# CB2PDF
+# CB2pdf
 
-This Python script converts `.cbz` and `.cbr` files to PDF format and moves the original files to a folder named `old` within the same directory.
-
-## Requirements
-
-- **Python 3**: Ensure that Python 3 is installed on your system.
-- **Pillow**: Python Imaging Library to handle image processing.
-- **rarfile**: Library to handle `.cbr` files.
-- **tqdm**: Library for displaying progress bars.
+Convert CBZ/ZIP and CBR/RAR comic archives into complete, verified PDFs. The default preserves resolution, avoids lossy image recompression, and keeps original archives. Existing outputs are protected unless `--overwrite` is explicitly supplied.
 
 ## Installation
 
-### Using pip (Preferred)
+Python 3.11 or newer is required. Python 3.14 on Linux has been tested locally; Windows, macOS, and Python 3.11–3.14 are covered by the configured CI matrix, which has not yet run remotely.
 
-1. **Install Required Libraries**:
-   - **Pillow**: Install using `pip`:
-     ```bash
-     pip install pillow
-     ```
-   - **rarfile**: Install using `pip`:
-     ```bash
-     pip install rarfile
-     ```
-   - **tqdm**: Install using `pip`:
-     ```bash
-     pip install tqdm
-     ```
+```sh
+python -m venv .venv
+# Linux / macOS
+source .venv/bin/activate
+# Windows PowerShell
+.venv\Scripts\Activate.ps1
+python -m pip install .
+# Optional RAR support
+python -m pip install '.[rar]'
+```
 
-2. **Clone the Repository**:
-   Open a terminal and clone the repository from GitHub:
-    ```bash
-    git clone https://github.com/empr0r/CB2PDF.git
-    ```
+RAR also requires a compatible executable on PATH: `unrar`, `unar`, `7z`, or `bsdtar`. On Arch Linux, install `unrar` with `sudo pacman -S unrar`. On Debian/Ubuntu, `sudo apt install libarchive-tools` provides bsdtar. On macOS, try the system bsdtar or install unar. On Windows, add the folder containing UnRAR.exe or 7z.exe to PATH. Backend capabilities vary, especially for solid and newer RAR variants.
 
-### On Arch Linux
-
-If `pip` is not an option or if you prefer to use system packages, follow these steps:
-
-1. **Install Required Libraries**:
-   - **Pillow**: Install using `pacman`:
-     ```bash
-     sudo pacman -S python-pillow
-     ```
-   - **rarfile**: Install using `paru` or another AUR helper:
-     ```bash
-     paru -S python-rarfile
-     ```
-   - **tqdm**: Install using `pacman`:
-     ```bash
-     sudo pacman -S python-tqdm
-     ```
-
-2. **Clone the Repository**:
-   Open a terminal and clone the repository from GitHub:
-    ```bash
-    git clone https://github.com/empr0r/CB2PDF.git
-    ```
+The runtime uses Pillow, img2pdf, and pypdf. The img2pdf distribution also depends on pikepdf; CB2pdf intentionally selects img2pdf's internal writer for consistent behavior across environments. No external PDF renderer is needed for conversion.
 
 ## Usage
 
-1. **Prepare Your Directory**:
-   - Drop the `cb2pdf.py` script into the directory containing your `.cbz` or `.cbr` files.
+```sh
+cb2pdf convert comic.cbz
+cb2pdf convert comic.cbr another.cbz --output ./pdfs
+cb2pdf convert ./library --recursive --workers 2
+cb2pdf convert comic.cbz --quality balanced
+cb2pdf convert comic.cbz --quality small --jpeg-quality 80
+cb2pdf convert comic.cbz --max-size 2560
+cb2pdf convert comic.cbz --page-size a4 --dpi 300
+cb2pdf convert comic.cbz --keep-original
+cb2pdf convert comic.cbz --move-original ./archive
+cb2pdf convert comic.cbz --dry-run
+cb2pdf convert ./library --report conversion.json --log-file conversion.log --json-logs
+cb2pdf inspect comic.cbz
+cb2pdf benchmark --quick --trials 3 --output benchmark-results.json
+cb2pdf --version
+```
 
-2. **Set Permissions**:
-   - Open a terminal and navigate to the directory where you placed the script.
-   - Make the script executable by running:
-     ```bash
-     chmod +x cb2pdf.py
-     ```
+Use `python -m cb2pdf` if the console command is not on PATH. `--output` names a directory; recursive conversion preserves the input directory structure beneath it. Multiple roots that would produce the same output are rejected before conversion. Individual files are identified by signature, so a ZIP mislabeled `.cbr` is accepted. Directory discovery selects `.cbz` and `.cbr` filenames.
 
-3. **Run the Script**:
-   - Execute the script by running:
-     ```bash
-     ./cb2pdf.py
-     ```
+Profiles:
 
-   This will process all `.cbz` and `.cbr` files in the directory, convert them to PDF, and move the original files to a folder called `old`.
+| Profile | Resolution | Encoding |
+|---|---|---|
+| `lossless` (default) | Original unless resizing explicitly requested | Direct JPEG/compatible PNG streams; otherwise lossless PDF encoding |
+| `balanced` | Original unless resizing explicitly requested | JPEG quality 90 for opaque images; alpha preserved losslessly |
+| `small` | Fit within 1600×1600 unless overridden | JPEG quality 75 for opaque images; alpha preserved with the requested size |
 
-## How It Works
+Explicit resizing changes pixels, including when combined with the `lossless` encoding profile. Lossy profiles can increase some files' sizes. Every normalization, resize, and JPEG encoding appears in the JSON conversion report. Transparency is preserved unless `--flatten-alpha` is selected; `--background FFFFFF` sets the flattening color.
 
-1. **Directory Setup**:
-   - The script starts by identifying the current directory and setting up an `old` directory where the original files will be moved after conversion.
+JPEG, PNG, WebP, BMP, GIF, and TIFF are supported. Every animation frame or TIFF page becomes a PDF page, in frame order. `--frames reject` refuses multiframe input instead. Animation timing does not carry over to PDF. Visible image members are naturally sorted by directory components and numeric runs. Hidden paths, AppleDouble files, and `__MACOSX` are ignored.
 
-2. **File Processing**:
-   - The script scans the current directory for files with `.cbz` or `.cbr` extensions.
-   - For each file, it identifies whether it is a CBZ (ZIP archive) or CBR (RAR archive).
+## File safety
 
-3. **Conversion**:
-   - For `.cbz` files, the script extracts images from the ZIP archive and combines them into a single PDF.
-   - For `.cbr` files, it uses the `rarfile` library to extract images from the RAR archive and then converts them to PDF.
+Conversion writes an exclusive temporary on the destination filesystem, fsyncs it, parses the finalized PDF, checks page completeness and image resources, then commits it. Direct JPEG and compatible PNG streams are also checked against per-page SHA-256 digests, detecting changed streams or page reordering. Other formats receive structural verification and have pixel-fidelity integration coverage.
 
-4. **Batch Processing**:
-   - The script processes files in batches to manage memory usage and system resources effectively. After processing a batch, it pauses to free up resources before moving on to the next batch.
+No-overwrite publication uses an exclusive hard link; unsupported filesystems fail safely. Explicit overwrites use atomic replacement after verification. Originals move only after successful PDF commit. Archival copies are committed exclusively and synced before removal of the source name. Copy or removal failures retain the PDF and report an incomplete archival outcome. Cross-filesystem archival was verified locally using a generated archive on distinct `/tmp` and project filesystems; Windows behavior remains unverified.
 
-5. **Progress Bar**:
-   - The script uses `tqdm` to display a progress bar while processing each file, providing visual feedback on the conversion status.
+Catchable failures clean only temporaries owned by that conversion. A killed process can leave `.cb2pdf-*.cb2pdf-part` files; investigate those individually. Atomic publication is not a transaction spanning PDF and source archival, and Windows lacks a portable directory-fsync operation.
 
-6. **File Management**:
-   - After successfully converting a file, the script moves the original file to the `old` directory to keep the working directory organized.
+## Legacy workflow
 
-## License
+Running `python cb2pdf.py` without arguments scans the launcher's directory and moves successfully converted originals to its `old` folder. Install the package before copying the launcher elsewhere. The original single-file-only installation is superseded by this package. Explicit CLI arguments work through the launcher too. Importing the application no longer starts conversions or creates folders.
 
-**This project is licensed under the MIT License. See the LICENSE file for details.**
+## Development and further details
 
-## Troubleshooting
+```sh
+python -m pip install -e '.[rar,dev,benchmark]'
+python -m unittest discover -v
+python -m mypy
+python -m pyflakes src tests benchmarks/compare.py benchmarks/real_world.py cb2pdf.py
+python -m pycodestyle --max-line-length=100 src tests benchmarks/compare.py benchmarks/real_world.py cb2pdf.py
+python -m autopep8 --recursive --diff --exit-code --max-line-length=100 src tests
+python -m build
+python benchmarks/compare.py --trials 3 --workers 1 2 4
+```
 
-- **ModuleNotFoundError: No module named 'PIL':**
-  Ensure you have installed the Pillow library. Using `pip`, you can install it with:
-  ```bash
-  pip install pillow
-  ```
-  Alternatively, on Arch Linux, use:
-  ```bash
-  sudo pacman -S python-pillow
-  ```
+The unittest suite uses real archives/PDFs and injected filesystem failures. Poppler's optional `pdftoppm` enables additional rendering checks. RAR tests skip when the optional library or backend is unavailable.
 
-- **ModuleNotFoundError: No module named 'rarfile':**
-  Ensure you have installed the `rarfile` library. Using `pip`, you can install it with:
-  ```bash
-  pip install rarfile
-  ```
-  Alternatively, on Arch Linux, use:
-  ```bash
-  paru -S python-rarfile
-  ```
+See [configuration](docs/configuration.md), [architecture](docs/architecture.md), [troubleshooting and limitations](docs/troubleshooting.md), [performance methodology](docs/performance.md), [initial assessment](docs/assessment.md), and [changelog](CHANGELOG.md). Measured comparisons are in [benchmarks/reports](benchmarks/reports/).
 
-- **ModuleNotFoundError: No module named 'tqdm':**
-  Ensure you have installed the `tqdm` library. Using `pip`, you can install it with:
-  ```bash
-  pip install tqdm
-  ```
-  Alternatively, on Arch Linux, use:
-  ```bash
-  sudo pacman -S python-tqdm
-  ```
-
-- **Permission Denied:**
-  Make sure you have executed the `chmod +x cb2pdf.py` command before running the script.
-
+MIT licensed; the original copyright is preserved. Historical fork snapshots carry their own notices in [benchmarks/reference](benchmarks/reference/).

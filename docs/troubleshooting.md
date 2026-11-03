@@ -1,0 +1,19 @@
+# Troubleshooting and limitations
+
+**Existing output or sidecar:** choose another output/report/log path. PDFs can be replaced only using `--overwrite`. Logs and reports intentionally require a new filename. Case-folded NFC batch collision checks apply even on case-sensitive filesystems.
+
+**Missing RAR backend:** install `cb2pdf[rar]` and a compatible executable on PATH. The library detects backend availability; ZIP conversion does not require RAR support. The local integration suite exercises stored RAR3 pages with bsdtar available. Compressed/solid RAR5 and third-party backend variants have not been comprehensively verified. Encrypted archives, split ZIP/RAR archives and self-extracting executables are deliberately unsupported.
+
+**Resource limit:** the error identifies the ceiling. Inspect the archive, then increase only the relevant CLI ceiling if the input is trusted and the machine can accommodate it. A compression-ratio rejection can occur on legitimate highly compressible images; conservative defaults are intentional. Memory limits are accounting/scheduling controls, not process isolation. Native decoders and external RAR processes can take a long time before cooperative cancellation takes effect.
+
+**Invalid image:** no partial PDF is published. Repair the source or choose another input. Every GIF/WebP frame and TIFF page is included; `--frames reject` provides an explicit alternative. Floating-point and 32-bit integer TIFF cannot be preserved in ordinary image PDFs and are rejected. JPEG header verification does not guarantee all entropy-coded pixels decode; use `--decode-verify` for that additional check.
+
+**Color/metadata:** direct compatible JPEG/PNG streams and ICC profiles are preserved where supported by img2pdf. Lossy profiles authorize color conversion for JPEG encoding. Pixel normalization of mirrored JPEGs preserves their decoded pixels, not their original compressed representation. Arbitrary EXIF/XMP, PNG gamma/chromaticity chunks, animation timing, and application-specific metadata are not guaranteed to survive as equivalent PDF metadata. Gamma-sensitive workflows should use appropriate ICC profiles and check their reader. High-bit-depth alpha and unusual TIFF combinations may fail explicitly rather than be silently reduced.
+
+**PDF created, original remains:** read the structured status. An archival collision, copy/removal failure or directory-sync error is a partial transaction, not full success. Do not delete either copy until their state is understood. If removal succeeded but the following directory sync failed, `source_retained` is false and the error identifies incomplete archival durability.
+
+**Hard-link failure:** no-overwrite publication requires filesystem hard-link support. Select another filesystem. The application deliberately does not fall back to a racy check-then-rename. Windows network/FAT filesystems and some FUSE mounts may lack required operations. Windows has no portable directory-fsync equivalent. Read-only-file removal behavior also varies.
+
+**Interruption/recovery:** SIGINT requests cooperative cancellation. Completed PDFs are retained. Catchable failures clean their owned temporary files. SIGKILL, power loss or native crashes can leave `.cb2pdf-*.cb2pdf-part` files and `cb2pdf-images-*` directories. Check ownership and process state before removing individual leftovers; the application never sweeps similarly named files automatically.
+
+**Supported/tested platforms:** package syntax targets Python 3.11+. Local evidence is Linux x86-64, CPython 3.14.9, Pillow 13.0.0, img2pdf 0.6.3, pypdf 6.12.0 and rarfile 4.2. CI is configured for Linux, Windows and macOS across Python 3.11–3.14. A generated source was successfully archived across distinct Linux filesystems with an identical SHA-256 checksum. Remote jobs, hard-link behavior on Windows, extreme PDF sizes and standalone executables have not been verified locally. No standalone executable is shipped.
