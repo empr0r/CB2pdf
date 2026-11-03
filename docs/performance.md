@@ -46,3 +46,32 @@ Measured environment: AMD Ryzen 7 3800X (8 cores / 16 logical CPUs), approximate
 The redesign preserved every synthetic page and matched decoded pixels in expected order in all primary trials. It was faster than original CB2pdf on the tested JPEG/scan workloads, but slower than the fork for some directly embeddable JPEG and PNG workloads. Hash verification and fsync are included in redesign timing. Memory is workload-dependent: preserving large JPEG streams can use more RSS than historical lossy encoding.
 
 Private real-content validation covers 98, 184 and 183 pages, three trials each: all 465 pages per trial matched exported fixture pixels in order. The third source PDF required recovery for missing ASCIIHex end markers; warning counts are retained. Its indexed palette is exported explicitly, with a regression test and an independent Poppler pixel check on one page. All three source PDF hashes remained unchanged. This validates exported page content, not original comic-archive structure or every source PDF's rendering.
+
+## Performance follow-up
+
+`benchmarks/performance.py` compares the frozen pre-optimization package, current package and retained fork in a randomized order. Each trial starts a fresh process; archive setup and decoded-pixel assessment are outside conversion time. Every output page is validated for completeness, order and exact decoded pixels. Source SHA-256 identities are recorded per trial; mixed-version runs retain raw evidence but cannot produce a summary.
+
+Reproduce the baseline from the real Git history:
+
+```sh
+git worktree add --detach ../cb2pdf-performance-baseline c33c10b
+python benchmarks/performance.py --baseline-src ../cb2pdf-performance-baseline/src --trials 5 --output benchmarks/reports/new-performance.json
+# Optional: previously prepared static-page CBZ fixture directories
+python benchmarks/performance.py --baseline-src ../cb2pdf-performance-baseline/src --trials 5 --fixture-dirs /path/to/fixture1 /path/to/fixture2 --output benchmarks/reports/new-real-performance.json
+```
+
+Fixture inputs are read-only: each variant receives its own copy in an application-owned temporary directory. Historical code can move only those copies. The fixture runner expects static-page CBZs; it is separate from the application's general multiframe conversion support. Reports anonymize custom dataset labels. Private fixtures remain ignored and excluded from source distributions.
+
+The [performance report](../benchmarks/reports/performance-summary.md) explains the final measurements. The synthetic record is `performance-verified.json`/`.md` (120 trials, eight workloads, three variants, five trials each). The real-page comparison is `performance-verified-real.json`/`.md`. Earlier development runs remain explicitly labeled; their faster PNG measurements predate full bounded DEFLATE/scanline validation and are not final claims.
+
+Optimizations retain preservation and output safeguards:
+
+- PNG metadata uses Pillow's chunk parser without reconstructing pixels. Chunk CRCs, inner zlib checksum/completion, scanline length/filter tags and text/ICC decompression protection remain checked. Opaque DEFLATE output blocks are at most 1 MiB; compressed input slices are at most 64 KiB. Full alpha/interlace/animated-frame decoding still uses Pillow when required.
+- Already-inspected orientation is applied through owned img2pdf page handles, avoiding a second implicit PNG pixel decode. Expected rotations are independently verified. Late EXIF is accepted as a compatibility behavior; malformed late color/transparency/DPI chunks fail instead of being silently dropped. Modern chunk-order requirements are defined in the [W3C PNG specification](https://www.w3.org/TR/png-3/#5ChunkOrdering).
+- ZIP reads request a bounded member extent directly, removing intermediate growth/copy buffers. CRC, actual-size, resource and cancellation checks remain. RAR keeps its incremental read path.
+- SHA-256 can overlap archive/PDF I/O. One helper thread and at most two outstanding payloads are permitted per stage; payloads below 256 KiB stay synchronous. A separate 64 KiB/256 KiB/1 MiB threshold experiment informed the choice. All futures are awaited. This uses additional instantaneous CPU capacity; CPU seconds/percentage are recorded.
+- The owned img2pdf Parent/Kids cycles and object references are cleared after serialization, before opening the independent reader. Real-output tests with automatic GC disabled verify release on success and failed writes. No unconditional GC, decoded-image cache or global library monkey patch is used.
+- Small PDFs up to 16 MiB can use mapped reads for parsing. Mapping failures fall back to ordinary file reads; large PDFs avoid mapping to prevent unnecessary resident file/heap duplication.
+- Plugins inheriting Pillow's no-op base verifier reuse the open image. Dedicated plugin verifiers still receive a fresh read, and fault-injection coverage prevents skipping them.
+
+The fork is eligible for equal-quality ranking only when it produces the expected page count and exact ordered pixels. Mixed-format omission/recompression and automatic high-resolution resizing remain visible in the tables. A raw time advantage for an incomplete/lossy result is not an equivalent-output win. Results apply to this shared Linux host and source-loaded internal img2pdf engine; pikepdf, other platforms, cold caches and compressed CBR performance remain unmeasured.

@@ -241,6 +241,19 @@ class ArchiveReader:
 
     def read(self, member: ArchiveMember) -> bytes:
         """Read one bounded member to EOF, enforcing declared size and backend CRC."""
+        check_cancelled(self.cancel)
+        if member.size > self.limits.max_member_bytes:
+            raise ResourceLimitError(f"member size exceeds limit: {member.name!r}")
+        if self.format == "zip":
+            # A size-bounded read lets ZipExtFile return its bytes directly, avoiding
+            # a bytearray growth/copy and a second full-member bytes allocation.
+            # Reading one byte past the declared extent also requests EOF/CRC checks.
+            with self.open(member) as stream:
+                result = stream.read(member.size + 1)
+            check_cancelled(self.cancel)
+            if len(result) > member.size:
+                raise ResourceLimitError(f"actual member size exceeds limit: {member.name!r}")
+            return self._checked_data(member, result)
         data = bytearray()
         with self.open(member) as stream:
             while True:
@@ -251,12 +264,15 @@ class ArchiveReader:
                 data.extend(block)
                 if len(data) > member.size or len(data) > self.limits.max_member_bytes:
                     raise ResourceLimitError(f"actual member size exceeds limit: {member.name!r}")
+        return self._checked_data(member, bytes(data))
+
+    def _checked_data(self, member: ArchiveMember, data: bytes) -> bytes:
         if len(data) != member.size:
             raise ArchiveCorruptionError(f"declared/actual size mismatch: {member.name!r}")
         self.actual_bytes += len(data)
         if self.actual_bytes > self.limits.max_total_bytes:
             raise ResourceLimitError("actual uncompressed image data exceeds total byte limit")
-        return bytes(data)
+        return data
 
     def close(self) -> None:
         if self.handle is not None:

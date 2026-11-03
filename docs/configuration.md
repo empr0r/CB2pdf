@@ -58,3 +58,9 @@ The estimated worker envelope is `3 * max_pdf_input_bytes + 16 * max_pixels + 2 
 JSON statuses distinguish `success`, `failed`, `cancelled`, `dry_run`, `pdf_committed_archival_incomplete` and `pdf_committed_durability_failed`. Check `verified`, `committed`, `source_retained`, `archived_to`, `error_type`, `error`, and page transformations to understand partial outcomes. Skipped pages are always zero: a required invalid page fails conversion.
 
 Exit 0: requested work succeeded (including valid dry-run). Exit 1: conversion failures, cancellations or no comic archives found. Exit 2: argument/preflight/inspection/reporting errors. Exit 130: interruption. Already committed PDFs remain available after interruption or a later batch failure.
+
+## Performance implementation and accounting
+
+`--workers` controls active archives. Each active archive may also use one native SHA-256 helper thread, and at most two digest payloads can be outstanding. The measured threshold is 256 KiB; smaller payloads remain synchronous. This changes CPU overlap, not the required digest checks. Conversion waits for all input digests, verification waits for all output digests, and publication remains synced and exclusive. The existing memory estimate includes room for member buffers; it remains a conservative scheduling estimate rather than an OS cap.
+
+Opaque non-interlaced PNG validation inflates into blocks of at most 1 MiB, checks scanline/filter structure, and discards those blocks without reconstructing RGB pixels. Invalid compressed streams or expansion beyond IHDR dimensions fail the archive. PNG metadata chunks over 16 MiB are rejected; Pillow's own text-decompression safeguards remain active. Late color/transparency/DPI chunks are refused rather than silently ignored by the embedding library. Late EXIF is tolerated for compatibility with existing files.

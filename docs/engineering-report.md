@@ -79,7 +79,15 @@ The repository remains dependent on filesystem support for hard links and fsync 
 1. Run the configured platform matrix and expand compressed RAR/backend fixtures.
 2. Validate difficult preservation cases against independent renderers and color-managed readers.
 3. Benchmark the same lossless corpus with ordinarily installed pikepdf and prototype isolated process workers for enforceable memory/time bounds.
-4. Improve large-document compressed-object lifecycle only after profiling; retain current honest memory accounting and verification.
+4. Measure remaining large-document allocations before changing lifecycle or caching policies; preserve the verified writer-graph release and honest memory accounting.
 5. Evaluate executable distribution after backend and platform validation, without remote publication until authorized.
 
 See `benchmarks/reports/comparison.json`, `comparison.md`, `real-world.json`, `final-smoke.json` and `scaling-exploration.json` for measured evidence. Final local commits and working-tree status are reported in the delivery message; build products, validation dependencies and private fixtures remain ignored local artifacts.
+
+## Performance follow-up
+
+The current package has 17 typed modules and 107 passing tests. The performance follow-up adds bounded PNG scanline validation without pixel reconstruction, explicit per-page rotation handling, allocation-efficient ZIP reads, bounded native hash overlap, mapped small-PDF parsing with fallback, and deterministic release of the owned img2pdf graph before independent verification. SHA-256, strict parsing, completeness checks, fsync and exclusive publication remain enabled.
+
+`performance-verified.json` records 120 randomized fresh-process trials against a frozen pre-optimization package and the reference fork. All optimized outputs passed every page's completeness and pixel comparison. Across the five workloads where the fork also produced complete pixel-identical output, optimized medians were 1.19×–1.99× faster. Large-JPEG maximum RSS decreased from baseline 417.4 MiB to 268.5 MiB; several-large-volume RSS fell from 395.1 MiB to 167.6 MiB. Output sizes matched the baseline in every workload. See the new performance report for full results and remaining unequal-quality cases; the original engineering measurements above remain historical records.
+
+The five-trial real-fixture follow-up preserved every page (2,325 exact page comparisons). One 184-page fixture retained a 6.4 ms/3.1% fork median lead, while optimized RSS was 99.0 MiB versus 159.7 MiB. The 98-page fixture was 1.11× faster; the 183-page fork result changed pixels on 180 pages and is excluded from equal-quality rankings. See [the performance report](../benchmarks/reports/performance-summary.md).

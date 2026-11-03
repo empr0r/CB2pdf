@@ -72,15 +72,21 @@ Running `python cb2pdf.py` without arguments scans the launcher's directory and 
 python -m pip install -e '.[rar,dev,benchmark]'
 python -m unittest discover -v
 python -m mypy
-python -m pyflakes src tests benchmarks/compare.py benchmarks/real_world.py cb2pdf.py
-python -m pycodestyle --max-line-length=100 src tests benchmarks/compare.py benchmarks/real_world.py cb2pdf.py
+python -m pyflakes src tests benchmarks/compare.py benchmarks/real_world.py benchmarks/performance.py cb2pdf.py
+python -m pycodestyle --max-line-length=100 src tests benchmarks/compare.py benchmarks/real_world.py benchmarks/performance.py cb2pdf.py
 python -m autopep8 --recursive --diff --exit-code --max-line-length=100 src tests
 python -m build
 python benchmarks/compare.py --trials 3 --workers 1 2 4
 ```
 
-The unittest suite uses real archives/PDFs and injected filesystem failures. Poppler's optional `pdftoppm` enables additional rendering checks. RAR tests skip when the optional library or backend is unavailable.
+The 107-test unittest suite uses real archives/PDFs and injected filesystem failures. Poppler's optional `pdftoppm` enables additional rendering checks. RAR tests skip when the optional library or backend is unavailable.
 
 See [configuration](docs/configuration.md), [architecture](docs/architecture.md), [troubleshooting and limitations](docs/troubleshooting.md), [performance methodology](docs/performance.md), [initial assessment](docs/assessment.md), and [changelog](CHANGELOG.md). Measured comparisons are in [benchmarks/reports](benchmarks/reports/).
 
 MIT licensed; the original copyright is preserved. Historical fork snapshots carry their own notices in [benchmarks/reference](benchmarks/reference/).
+
+## Performance follow-up
+
+The optimized pipeline retains fsync, strict independent PDF parsing, direct-image stream SHA-256 checks and lossless defaults. It removes avoidable PNG pixel reconstruction, validates opaque PNG DEFLATE/scanline structure in bounded buffers, reads ZIP members without intermediate growth buffers, overlaps large hashes with I/O, and releases the writer's cyclic image graph before verification. One active archive can use one additional hashing thread, with two outstanding payloads at most; small hashes run synchronously.
+
+In five-trial fresh-process tests, the optimized version beat the reference fork's median conversion time in all five workloads where both produced complete pixel-identical output (1.19×–1.99×). This is a measured workload-specific result, not a universal speed claim. The mixed-format fork output remains incomplete/lossy and is excluded from equivalent-output rankings. See [performance report](benchmarks/reports/performance-summary.md) and [methodology](docs/performance.md#performance-follow-up).

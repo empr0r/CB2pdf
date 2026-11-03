@@ -1,7 +1,7 @@
 """Image inspection and lazy, one-page-at-a-time normalization."""
 
 import io
-import hashlib
+from concurrent.futures import Future
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -9,8 +9,10 @@ from PIL import Image, ImageCms, ImageOps, UnidentifiedImageError
 
 from .archives import ArchiveReader, check_cancelled
 from .config import ConversionConfig, Quality
+from .digests import DigestPipeline, image_stream_digest
 from .errors import ImageDecodeError, ResourceLimitError
 from .models import ArchiveMember, ImageMetadata, PageResult
+from .png import inspect_png_chunks
 
 SUPPORTED_FORMATS = {"JPEG", "PNG", "WEBP", "BMP", "GIF", "TIFF"}
 
@@ -20,7 +22,13 @@ def _metadata(image: Image.Image, frames: int, config: ConversionConfig) -> Imag
         raise ResourceLimitError(
             f"image {image.width}x{image.height} exceeds {config.limits.max_pixels} pixels"
         )
-    orientation = int(image.getexif().get(274, 1))
+    if image.format == "PNG":
+        # Complete chunk metadata was collected without inflating IDAT. Bypass
+        # PngImageFile.getexif(), whose implementation forces raster decoding.
+        exif = Image.Image.getexif(image)
+    else:
+        exif = image.getexif()
+    orientation = int(exif.get(274, 1))
     if orientation not in range(1, 9):
         raise ImageDecodeError(
             f"invalid EXIF orientation {orientation}; repair the source metadata")
@@ -31,6 +39,8 @@ def _metadata(image: Image.Image, frames: int, config: ConversionConfig) -> Imag
         image.format or "", image.mode, image.width, image.height, frames, orientation,
         "A" in image.getbands() or "transparency" in image.info,
         bool(image.info.get("icc_profile")),
+        bool(getattr(image, "is_animated", False)
+             or getattr(image, "custom_mimetype", None) == "image/apng"),
     )
 
 
@@ -46,6 +56,13 @@ def inspect_member(
         with archive.open(member) as stream, Image.open(stream) as image:
             if image.format not in SUPPORTED_FORMATS:
                 raise ImageDecodeError(f"unsupported image content: {image.format}")
+            if image.width * image.height > config.limits.max_pixels:
+                raise ResourceLimitError("image exceeds configured pixel limit")
+            png = image.format == "PNG"
+            base_verifier = type(image).verify is Image.Image.verify
+            if png:
+                with archive.open(member) as chunks:
+                    image.info.update(inspect_png_chunks(chunks, member.size, archive.cancel))
             _metadata(image, 1, config)
             frames = getattr(image, "n_frames", 1)
             if frames > config.limits.max_pages:
@@ -59,10 +76,15 @@ def inspect_member(
                 metadata.append(_metadata(image, frames, config))
                 if config.decode_verify:
                     image.load()
-            # verify() checks PNG chunk integrity and available format structure.
-            # Reopen because seeking/loading can invalidate format verification state.
-        with archive.open(member) as stream, Image.open(stream) as image:
-            image.verify()
+            if not png and base_verifier:
+                # The base verifier is a placeholder, not a fresh-file parser.
+                # Keep the call without reopening/re-reading the same headers.
+                image.verify()
+            # Dedicated plugin verifiers can depend on fresh seek/decode state;
+            # preserve their separate read, while PNG checks use our chunk path.
+        if not png and not base_verifier:
+            with archive.open(member) as stream, Image.open(stream) as image:
+                image.verify()
         return metadata
     except (ResourceLimitError, ImageDecodeError):
         raise
@@ -107,6 +129,9 @@ class ImageInput:
         if metadata.orientation in (5, 6, 7, 8):
             width, height = height, width
         self.result = PageResult(member.name, frame + 1, width, height)
+        self.result.rotation_degrees = {3: 180, 6: 90, 8: 270}.get(metadata.orientation, 0)
+        self.digest_pipeline: DigestPipeline | None = None
+        self._digest_future: Future[str] | None = None
 
     def read(self) -> bytes:
         check_cancelled(self.archive.cancel)
@@ -131,22 +156,18 @@ class ImageInput:
             accounted = max(accounted, self.result.width * self.result.height * 8)
         self.budget.consume(accounted)
         if direct:
-            digest = hashlib.sha256()
-            if data.startswith(b"\xff\xd8"):
-                digest.update(data)
+            if self.digest_pipeline is not None:
+                self._digest_future = self.digest_pipeline.image(data)
             else:
-                offset = 8
-                while offset + 12 <= len(data):
-                    length = int.from_bytes(data[offset:offset + 4], "big")
-                    kind = data[offset + 4:offset + 8]
-                    if offset + length + 12 > len(data):
-                        raise ImageDecodeError("invalid PNG chunk extent")
-                    if kind == b"IDAT":
-                        digest.update(memoryview(data)[offset + 8:offset + 8 + length])
-                    offset += length + 12
-            self.result.direct_stream_sha256 = digest.hexdigest()
+                self.result.direct_stream_sha256 = image_stream_digest(data)
         self.result.encoded_bytes = len(data)
         return data
+
+    def finish_digest(self) -> None:
+        """Transfer a completed digest into the serializable page result."""
+        if self._digest_future is not None:
+            self.result.direct_stream_sha256 = self._digest_future.result()
+            self._digest_future = None
 
     def _prepare(self, raw: bytes) -> bytes:
         metadata, config = self.metadata, self.config
@@ -161,6 +182,7 @@ class ImageInput:
         )
         normalize = (
             metadata.frames > 1
+            or metadata.is_animated
             or metadata.orientation in (2, 4, 5, 7)
             or (config.page_size is not None and metadata.orientation != 1)
             or resize
@@ -174,6 +196,7 @@ class ImageInput:
         with Image.open(io.BytesIO(raw)) as original:
             original.seek(self.frame)
             with ImageOps.exif_transpose(original) as image:
+                self.result.rotation_degrees = 0
                 transformations = self.result.transformations
                 if metadata.frames > 1:
                     transformations.append(f"expanded frame {self.frame + 1}/{metadata.frames}")

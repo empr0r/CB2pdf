@@ -24,6 +24,7 @@ class ImageMetadata:
     orientation: int
     has_alpha: bool
     has_icc: bool
+    is_animated: bool = False
 
 
 @dataclass
@@ -35,6 +36,7 @@ class PageResult:
     transformations: list[str] = field(default_factory=list)
     encoded_bytes: int = 0
     direct_stream_sha256: str | None = None
+    rotation_degrees: int = 0
 
 
 @dataclass(frozen=True)

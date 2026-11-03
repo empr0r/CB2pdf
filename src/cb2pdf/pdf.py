@@ -1,14 +1,18 @@
 """Established image embedding and independent PDF completeness verification."""
 
 from pathlib import Path
-import hashlib
-from typing import BinaryIO
+import mmap
+from collections import deque
+from concurrent.futures import Future
+from contextlib import ExitStack
+from typing import BinaryIO, cast
 
 import img2pdf
 from pypdf import PdfReader
 from pypdf.generic import DictionaryObject, StreamObject
 
 from .config import ConversionConfig
+from .digests import DigestPipeline
 from .errors import ConversionError, PdfGenerationError, PdfVerificationError, ResourceLimitError
 from .images import ImageInput
 from .models import VerificationResult
@@ -45,25 +49,60 @@ def write_pdf(pages: list[ImageInput], stream: BinaryIO, config: ConversionConfi
         def layout(width: int, height: int, native_dpi: tuple[float, float]) -> tuple:
             return base_layout(width, height, (config.dpi, config.dpi))
 
+    document = None
     try:
-        img2pdf.convert(
-            pages,
-            outputstream=LimitedOutput(stream, config.limits.max_output_bytes),
-            engine=img2pdf.Engine.internal,
-            layout_fun=layout,
-            title=config.title,
-            author=config.author,
-            subject=config.subject,
-            keywords=list(config.keywords) or None,
-            creator="CB2pdf",
-            nodate=True,
-            first_frame_only=False,
-            rotation=img2pdf.Rotation.auto,
-        )
+        with DigestPipeline() as digests:
+            for source in pages:
+                source.digest_pipeline = digests
+            try:
+                document = img2pdf.convert_to_docobject(
+                    pages,
+                    engine=img2pdf.Engine.internal,
+                    layout_fun=layout,
+                    title=config.title,
+                    author=config.author,
+                    subject=config.subject,
+                    keywords=list(config.keywords) or None,
+                    creator="CB2pdf",
+                    nodate=True,
+                    first_frame_only=False,
+                    # Orientation is already validated by our image inspector.
+                    # img2pdf's automatic discovery would decode PNGs again.
+                    rotation=img2pdf.Rotation.none,
+                )
+                # These handles belong to this internal-engine document only.
+                # Apply mixed rotations without changing compressed image bytes
+                # or mutating Pillow/img2pdf global state.
+                encoded_pages = document.writer.pagearray
+                if len(encoded_pages) != len(pages):
+                    raise PdfGenerationError("img2pdf page count differs from prepared inputs")
+                for encoded, source in zip(encoded_pages, pages, strict=True):
+                    if source.result.rotation_degrees:
+                        encoded[img2pdf.MyPdfName.Rotate] = source.result.rotation_degrees
+                document.tostream(LimitedOutput(stream, config.limits.max_output_bytes))
+                for source in pages:
+                    source.finish_digest()
+            finally:
+                for source in pages:
+                    source.digest_pipeline = None
     except ConversionError:
         raise
     except Exception as exc:
         raise PdfGenerationError(f"PDF image embedding failed: {exc}") from exc
+    finally:
+        if document is not None:
+            # img2pdf's internal page tree contains Parent/Kids reference cycles.
+            # Break the owned graph after serialization (also on write failure),
+            # releasing compressed payloads before the independent reader starts.
+            # Keep this engine-specific ownership detail inside the PDF adapter.
+            document.writer.pages.content[b"/Kids"].clear()
+            document.writer.pagearray.clear()
+            document.writer.objects.clear()
+
+
+def _check_digest(future: Future[str], expected: str, page_number: int) -> None:
+    if future.result() != expected:
+        raise PdfVerificationError(f"image stream or page order mismatch on page {page_number}")
 
 
 def verify_pdf(path: Path, pages: list[ImageInput]) -> VerificationResult:
@@ -75,7 +114,21 @@ def verify_pdf(path: Path, pages: list[ImageInput]) -> VerificationResult:
     reader = None
     try:
         size = path.stat().st_size
-        with path.open("rb") as stream:
+        with ExitStack() as stack:
+            file = stack.enter_context(path.open("rb"))
+            digests = stack.enter_context(DigestPipeline())
+            pending: deque[tuple[Future[str], str, int]] = deque()
+            stream: BinaryIO = file
+            if size <= 16 * 1024**2:
+                # Small-token PDF parsing benefits from mapped reads. Limit mapping
+                # size so a large document cannot double resident file/heap pages.
+                try:
+                    mapped = mmap.mmap(file.fileno(), 0, access=mmap.ACCESS_READ)
+                except (OSError, ValueError):
+                    pass  # Mapping is an optimization; ordinary reads remain valid.
+                else:
+                    stack.enter_context(mapped)
+                    stream = cast(BinaryIO, mapped)
             if stream.read(5) != b"%PDF-":
                 raise PdfVerificationError("missing PDF signature")
             stream.seek(max(0, size - 64))
@@ -90,6 +143,12 @@ def verify_pdf(path: Path, pages: list[ImageInput]) -> VerificationResult:
                     f"expected {len(pages)} pages, found {len(reader.pages)}"
                 )
             for index, (page, expected) in enumerate(zip(reader.pages, pages, strict=True)):
+                rotation = page.get("/Rotate", 0)
+                if (
+                    not isinstance(rotation, int)
+                    or rotation % 360 != expected.result.rotation_degrees
+                ):
+                    raise PdfVerificationError(f"wrong orientation on page {index + 1}")
                 if page.mediabox.width <= 0 or page.mediabox.height <= 0:
                     raise PdfVerificationError(f"invalid dimensions on page {index + 1}")
                 contents = page.get_contents()
@@ -124,10 +183,11 @@ def verify_pdf(path: Path, pages: list[ImageInput]) -> VerificationResult:
                 if digest is not None:
                     if not isinstance(image, StreamObject):
                         raise PdfVerificationError(f"missing image stream on page {index + 1}")
-                    if hashlib.sha256(image._data).hexdigest() != digest:
-                        raise PdfVerificationError(
-                            f"image stream or page order mismatch on page {index + 1}"
-                        )
+                    if len(pending) >= 2:
+                        _check_digest(*pending.popleft())
+                    pending.append((digests.stream(image._data), digest, index + 1))
+            while pending:
+                _check_digest(*pending.popleft())
         return VerificationResult(len(pages), len(pages), size)
     except PdfVerificationError:
         raise
