@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.0.0 — Prepared stable release (unpublished)
+
+- Promoted the platform-qualified rc2 implementation to stable package/module version 2.0.0; conversion behavior is unchanged.
+- Qualified the implementation in all sixteen OS/Python/dependency configurations, plus build and quality gates. Preserved exact installed-artifact, codec, source-safety and pixel checks.
+- Final stable-version artifacts are built and validated separately before publication; the release evidence records the exact bytes tested.
+
 ## 2.0.0rc2 — CI decoder compatibility (unpublished)
 
 - Rc2 CI passed all five Windows and all five macOS configurations. Pinned the verified upstream Linux 7-Zip 26.05 binary after reproducing the packaged RAR4 decoder crash; strict native-byte/pixel assertions remain. CI-only provisioning does not alter the application runtime. Reports now include decoder version and executable identity.

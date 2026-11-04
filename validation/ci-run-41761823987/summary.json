@@ -1,0 +1,296 @@
+{
+  "schema_version": 1,
+  "run_id": 41761823987,
+  "url": "https://github.com/empr0r/CB2pdf/actions/runs/41761823987",
+  "commit": "432acec6291c324be223f1db23d69d25e07a64d9",
+  "success": true,
+  "build": "success",
+  "quality": "success",
+  "test_jobs_passed": 16,
+  "test_slots": 1904,
+  "executed_passing_tests": 1855,
+  "expected_skips": 49,
+  "failures": 0,
+  "errors": 0,
+  "results": [
+    {
+      "name": "validation-windows-latest-3.11-latest",
+      "tests": 119,
+      "skips": 5,
+      "artifact_sha256": "8e733cd4511df4d3c26fc51e51046491031901bfd7ca097ebcf555bc28eaa39a",
+      "source_sha256": "d1ddbda462662b227333af980a632b9dc648eac8c6c550c1d5770ab5d12fc7be",
+      "sevenzip_codec_profile": {
+        "returncode": 0,
+        "rar_decoders": [
+          "Rar1",
+          "Rar2",
+          "Rar3",
+          "Rar5"
+        ],
+        "version_header": "7-Zip 26.05 (x64) : Copyright (c) 1999-2026 Igor Pavlov : 2026-10-21",
+        "executable_path": "C:\\Program Files\\7-Zip\\7z.exe",
+        "executable_sha256": "94205cfc054dd3bbeb978905bc619a65b3f04e9e73bb2717841110b6f46d962e"
+      }
+    },
+    {
+      "name": "validation-macos-latest-3.13-latest",
+      "tests": 119,
+      "skips": 1,
+      "artifact_sha256": "8e733cd4511df4d3c26fc51e51046491031901bfd7ca097ebcf555bc28eaa39a",
+      "source_sha256": "d1ddbda462662b227333af980a632b9dc648eac8c6c550c1d5770ab5d12fc7be",
+      "sevenzip_codec_profile": {
+        "returncode": 0,
+        "rar_decoders": [],
+        "version_header": "7-Zip [64] 17.05 : Copyright (c) 1999-2021 Igor Pavlov : 2017-08-28",
+        "executable_path": "/opt/homebrew/Cellar/p7zip/17.06/bin/7z",
+        "executable_sha256": "983978cf9df7c6a1d7f2a4c0bf7bbb9751c3d7704e0ce38c94929ebd53a4edd7"
+      }
+    },
+    {
+      "name": "validation-windows-latest-3.14-latest",
+      "tests": 119,
+      "skips": 5,
+      "artifact_sha256": "8e733cd4511df4d3c26fc51e51046491031901bfd7ca097ebcf555bc28eaa39a",
+      "source_sha256": "d1ddbda462662b227333af980a632b9dc648eac8c6c550c1d5770ab5d12fc7be",
+      "sevenzip_codec_profile": {
+        "returncode": 0,
+        "rar_decoders": [
+          "Rar1",
+          "Rar2",
+          "Rar3",
+          "Rar5"
+        ],
+        "version_header": "7-Zip 26.05 (x64) : Copyright (c) 1999-2026 Igor Pavlov : 2026-10-21",
+        "executable_path": "C:\\Program Files\\7-Zip\\7z.exe",
+        "executable_sha256": "94205cfc054dd3bbeb978905bc619a65b3f04e9e73bb2717841110b6f46d962e"
+      }
+    },
+    {
+      "name": "validation-ubuntu-latest-3.14-basic",
+      "tests": 119,
+      "skips": 14,
+      "artifact_sha256": "8e733cd4511df4d3c26fc51e51046491031901bfd7ca097ebcf555bc28eaa39a",
+      "source_sha256": "d1ddbda462662b227333af980a632b9dc648eac8c6c550c1d5770ab5d12fc7be",
+      "sevenzip_codec_profile": {
+        "returncode": 0,
+        "rar_decoders": [
+          "Rar1",
+          "Rar2",
+          "Rar3",
+          "Rar5"
+        ],
+        "version_header": "7-Zip (z) 26.05 (x64) : Copyright (c) 1999-2026 Igor Pavlov : 2026-10-21",
+        "executable_path": "/home/runner/work/_temp/cb2pdf-7zip-26.05/bin/7z",
+        "executable_sha256": "d32657a7a0e4cdc0a8aa57cafe474746944d76e861e753e9c902b9c9356fa886"
+      }
+    },
+    {
+      "name": "validation-macos-latest-3.11-minimum",
+      "tests": 119,
+      "skips": 1,
+      "artifact_sha256": "8e733cd4511df4d3c26fc51e51046491031901bfd7ca097ebcf555bc28eaa39a",
+      "source_sha256": "d1ddbda462662b227333af980a632b9dc648eac8c6c550c1d5770ab5d12fc7be",
+      "sevenzip_codec_profile": {
+        "returncode": 0,
+        "rar_decoders": [],
+        "version_header": "7-Zip [64] 17.05 : Copyright (c) 1999-2021 Igor Pavlov : 2017-08-28",
+        "executable_path": "/opt/homebrew/Cellar/p7zip/17.06/bin/7z",
+        "executable_sha256": "983978cf9df7c6a1d7f2a4c0bf7bbb9751c3d7704e0ce38c94929ebd53a4edd7"
+      }
+    },
+    {
+      "name": "validation-windows-latest-3.13-latest",
+      "tests": 119,
+      "skips": 5,
+      "artifact_sha256": "8e733cd4511df4d3c26fc51e51046491031901bfd7ca097ebcf555bc28eaa39a",
+      "source_sha256": "d1ddbda462662b227333af980a632b9dc648eac8c6c550c1d5770ab5d12fc7be",
+      "sevenzip_codec_profile": {
+        "returncode": 0,
+        "rar_decoders": [
+          "Rar1",
+          "Rar2",
+          "Rar3",
+          "Rar5"
+        ],
+        "version_header": "7-Zip 26.05 (x64) : Copyright (c) 1999-2026 Igor Pavlov : 2026-10-21",
+        "executable_path": "C:\\Program Files\\7-Zip\\7z.exe",
+        "executable_sha256": "94205cfc054dd3bbeb978905bc619a65b3f04e9e73bb2717841110b6f46d962e"
+      }
+    },
+    {
+      "name": "validation-ubuntu-latest-3.11-latest",
+      "tests": 119,
+      "skips": 1,
+      "artifact_sha256": "8e733cd4511df4d3c26fc51e51046491031901bfd7ca097ebcf555bc28eaa39a",
+      "source_sha256": "d1ddbda462662b227333af980a632b9dc648eac8c6c550c1d5770ab5d12fc7be",
+      "sevenzip_codec_profile": {
+        "returncode": 0,
+        "rar_decoders": [
+          "Rar1",
+          "Rar2",
+          "Rar3",
+          "Rar5"
+        ],
+        "version_header": "7-Zip (z) 26.05 (x64) : Copyright (c) 1999-2026 Igor Pavlov : 2026-10-21",
+        "executable_path": "/home/runner/work/_temp/cb2pdf-7zip-26.05/bin/7z",
+        "executable_sha256": "d32657a7a0e4cdc0a8aa57cafe474746944d76e861e753e9c902b9c9356fa886"
+      }
+    },
+    {
+      "name": "validation-ubuntu-latest-3.11-minimum",
+      "tests": 119,
+      "skips": 1,
+      "artifact_sha256": "8e733cd4511df4d3c26fc51e51046491031901bfd7ca097ebcf555bc28eaa39a",
+      "source_sha256": "d1ddbda462662b227333af980a632b9dc648eac8c6c550c1d5770ab5d12fc7be",
+      "sevenzip_codec_profile": {
+        "returncode": 0,
+        "rar_decoders": [
+          "Rar1",
+          "Rar2",
+          "Rar3",
+          "Rar5"
+        ],
+        "version_header": "7-Zip (z) 26.05 (x64) : Copyright (c) 1999-2026 Igor Pavlov : 2026-10-21",
+        "executable_path": "/home/runner/work/_temp/cb2pdf-7zip-26.05/bin/7z",
+        "executable_sha256": "d32657a7a0e4cdc0a8aa57cafe474746944d76e861e753e9c902b9c9356fa886"
+      }
+    },
+    {
+      "name": "validation-ubuntu-latest-3.13-latest",
+      "tests": 119,
+      "skips": 1,
+      "artifact_sha256": "8e733cd4511df4d3c26fc51e51046491031901bfd7ca097ebcf555bc28eaa39a",
+      "source_sha256": "d1ddbda462662b227333af980a632b9dc648eac8c6c550c1d5770ab5d12fc7be",
+      "sevenzip_codec_profile": {
+        "returncode": 0,
+        "rar_decoders": [
+          "Rar1",
+          "Rar2",
+          "Rar3",
+          "Rar5"
+        ],
+        "version_header": "7-Zip (z) 26.05 (x64) : Copyright (c) 1999-2026 Igor Pavlov : 2026-10-21",
+        "executable_path": "/home/runner/work/_temp/cb2pdf-7zip-26.05/bin/7z",
+        "executable_sha256": "d32657a7a0e4cdc0a8aa57cafe474746944d76e861e753e9c902b9c9356fa886"
+      }
+    },
+    {
+      "name": "validation-windows-latest-3.11-minimum",
+      "tests": 119,
+      "skips": 5,
+      "artifact_sha256": "8e733cd4511df4d3c26fc51e51046491031901bfd7ca097ebcf555bc28eaa39a",
+      "source_sha256": "d1ddbda462662b227333af980a632b9dc648eac8c6c550c1d5770ab5d12fc7be",
+      "sevenzip_codec_profile": {
+        "returncode": 0,
+        "rar_decoders": [
+          "Rar1",
+          "Rar2",
+          "Rar3",
+          "Rar5"
+        ],
+        "version_header": "7-Zip 26.05 (x64) : Copyright (c) 1999-2026 Igor Pavlov : 2026-10-21",
+        "executable_path": "C:\\Program Files\\7-Zip\\7z.exe",
+        "executable_sha256": "94205cfc054dd3bbeb978905bc619a65b3f04e9e73bb2717841110b6f46d962e"
+      }
+    },
+    {
+      "name": "validation-macos-latest-3.11-latest",
+      "tests": 119,
+      "skips": 1,
+      "artifact_sha256": "8e733cd4511df4d3c26fc51e51046491031901bfd7ca097ebcf555bc28eaa39a",
+      "source_sha256": "d1ddbda462662b227333af980a632b9dc648eac8c6c550c1d5770ab5d12fc7be",
+      "sevenzip_codec_profile": {
+        "returncode": 0,
+        "rar_decoders": [],
+        "version_header": "7-Zip [64] 17.05 : Copyright (c) 1999-2021 Igor Pavlov : 2017-08-28",
+        "executable_path": "/opt/homebrew/Cellar/p7zip/17.06/bin/7z",
+        "executable_sha256": "983978cf9df7c6a1d7f2a4c0bf7bbb9751c3d7704e0ce38c94929ebd53a4edd7"
+      }
+    },
+    {
+      "name": "validation-ubuntu-latest-3.12-latest",
+      "tests": 119,
+      "skips": 1,
+      "artifact_sha256": "8e733cd4511df4d3c26fc51e51046491031901bfd7ca097ebcf555bc28eaa39a",
+      "source_sha256": "d1ddbda462662b227333af980a632b9dc648eac8c6c550c1d5770ab5d12fc7be",
+      "sevenzip_codec_profile": {
+        "returncode": 0,
+        "rar_decoders": [
+          "Rar1",
+          "Rar2",
+          "Rar3",
+          "Rar5"
+        ],
+        "version_header": "7-Zip (z) 26.05 (x64) : Copyright (c) 1999-2026 Igor Pavlov : 2026-10-21",
+        "executable_path": "/home/runner/work/_temp/cb2pdf-7zip-26.05/bin/7z",
+        "executable_sha256": "d32657a7a0e4cdc0a8aa57cafe474746944d76e861e753e9c902b9c9356fa886"
+      }
+    },
+    {
+      "name": "validation-windows-latest-3.12-latest",
+      "tests": 119,
+      "skips": 5,
+      "artifact_sha256": "8e733cd4511df4d3c26fc51e51046491031901bfd7ca097ebcf555bc28eaa39a",
+      "source_sha256": "d1ddbda462662b227333af980a632b9dc648eac8c6c550c1d5770ab5d12fc7be",
+      "sevenzip_codec_profile": {
+        "returncode": 0,
+        "rar_decoders": [
+          "Rar1",
+          "Rar2",
+          "Rar3",
+          "Rar5"
+        ],
+        "version_header": "7-Zip 26.05 (x64) : Copyright (c) 1999-2026 Igor Pavlov : 2026-10-21",
+        "executable_path": "C:\\Program Files\\7-Zip\\7z.exe",
+        "executable_sha256": "94205cfc054dd3bbeb978905bc619a65b3f04e9e73bb2717841110b6f46d962e"
+      }
+    },
+    {
+      "name": "validation-ubuntu-latest-3.14-latest",
+      "tests": 119,
+      "skips": 1,
+      "artifact_sha256": "8e733cd4511df4d3c26fc51e51046491031901bfd7ca097ebcf555bc28eaa39a",
+      "source_sha256": "d1ddbda462662b227333af980a632b9dc648eac8c6c550c1d5770ab5d12fc7be",
+      "sevenzip_codec_profile": {
+        "returncode": 0,
+        "rar_decoders": [
+          "Rar1",
+          "Rar2",
+          "Rar3",
+          "Rar5"
+        ],
+        "version_header": "7-Zip (z) 26.05 (x64) : Copyright (c) 1999-2026 Igor Pavlov : 2026-10-21",
+        "executable_path": "/home/runner/work/_temp/cb2pdf-7zip-26.05/bin/7z",
+        "executable_sha256": "d32657a7a0e4cdc0a8aa57cafe474746944d76e861e753e9c902b9c9356fa886"
+      }
+    },
+    {
+      "name": "validation-macos-latest-3.12-latest",
+      "tests": 119,
+      "skips": 1,
+      "artifact_sha256": "8e733cd4511df4d3c26fc51e51046491031901bfd7ca097ebcf555bc28eaa39a",
+      "source_sha256": "d1ddbda462662b227333af980a632b9dc648eac8c6c550c1d5770ab5d12fc7be",
+      "sevenzip_codec_profile": {
+        "returncode": 0,
+        "rar_decoders": [],
+        "version_header": "7-Zip [64] 17.05 : Copyright (c) 1999-2021 Igor Pavlov : 2017-08-28",
+        "executable_path": "/opt/homebrew/Cellar/p7zip/17.06/bin/7z",
+        "executable_sha256": "983978cf9df7c6a1d7f2a4c0bf7bbb9751c3d7704e0ce38c94929ebd53a4edd7"
+      }
+    },
+    {
+      "name": "validation-macos-latest-3.14-latest",
+      "tests": 119,
+      "skips": 1,
+      "artifact_sha256": "8e733cd4511df4d3c26fc51e51046491031901bfd7ca097ebcf555bc28eaa39a",
+      "source_sha256": "d1ddbda462662b227333af980a632b9dc648eac8c6c550c1d5770ab5d12fc7be",
+      "sevenzip_codec_profile": {
+        "returncode": 0,
+        "rar_decoders": [],
+        "version_header": "7-Zip [64] 17.05 : Copyright (c) 1999-2021 Igor Pavlov : 2017-08-28",
+        "executable_path": "/opt/homebrew/Cellar/p7zip/17.06/bin/7z",
+        "executable_sha256": "983978cf9df7c6a1d7f2a4c0bf7bbb9751c3d7704e0ce38c94929ebd53a4edd7"
+      }
+    }
+  ]
+}

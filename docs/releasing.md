@@ -1,9 +1,12 @@
-# Release validation: 2.0.0rc2
+# Release validation: 2.0.0
 
-The rc1 branch was pushed and its platform CI ran. Candidate rc2 addresses the codec capability failures found there. No package release has been published. A stable release
-remains gated on successful Windows/macOS runs and review of the CI results.
-The feature set is frozen; the release pass changes conversion behavior only
-where real regression fixtures demonstrated a defect.
+The rc2 implementation passed all sixteen platform/dependency configurations
+and the build/quality jobs in
+[run 41761823987](https://github.com/empr0r/CB2pdf/actions/runs/41761823987).
+Version 2.0.0 promotes that implementation without changing conversion behavior.
+The stable version receives its own artifact build and validation; no package
+release, remote tag or merge to the default branch is performed automatically.
+Publication requires explicit authorization.
 
 ## Local evidence
 
@@ -64,18 +67,18 @@ Build with ordinary isolated packaging:
 
 ```sh
 python -m pip install build twine
-python -m build --outdir dist/2.0.0rc2
-python -m twine check --strict dist/2.0.0rc2/*
+python -m build --outdir dist/2.0.0
+python -m twine check --strict dist/2.0.0/*
 ```
 
 In a fresh virtual environment of the desired Python version:
 
 ```sh
-python -m pip install './dist/2.0.0rc2/cb2pdf-2.0.0rc2-py3-none-any.whl[rar,dev,benchmark]'
+python -m pip install './dist/2.0.0/cb2pdf-2.0.0-py3-none-any.whl[rar,dev,benchmark]'
 # Optional: reproduce the supported runtime floor, on Python 3.11
 python -m pip install Pillow==10.4.0 img2pdf==0.6.3 pypdf==6.12.0 rarfile==4.2
 python -m pip check
-python tools/validate_release.py --artifact dist/2.0.0rc2/cb2pdf-2.0.0rc2-py3-none-any.whl --report validation/new-run.json --require-rar
+python tools/validate_release.py --artifact dist/2.0.0/cb2pdf-2.0.0-py3-none-any.whl --report validation/new-run.json --require-rar
 ```
 
 Install a compatible decoder separately and put it on PATH. The validation
@@ -173,3 +176,17 @@ which methods are present; it cannot guarantee a native implementation is free
 of bugs. A crash remains a failed test. See
 [upstream release](https://github.com/ip7z/7zip/releases/tag/26.05) and the
 [retained second-run records](../validation/ci-run-41760345855/README.md).
+
+## Qualified implementation
+
+The corrected-environment rc2 run completed all eighteen jobs successfully:
+16 installed-wheel cases, build/strict metadata checks and quality checks.
+All job report archives are retained with SHA-256 verification under
+[validation/ci-run-41761823987](../validation/ci-run-41761823987/summary.json).
+The raw reports preserve expected backend/renderer skips rather than hiding
+them. The same CI-built wheel was tested in every platform case.
+
+A successful candidate qualifies the implementation; the stable-version wheel
+and source distribution are rebuilt and checked with their own identities.
+The final stable artifact records are retained separately under
+`validation/release-2.0.0` and its corresponding platform run.

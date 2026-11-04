@@ -1,0 +1,39 @@
+{
+  "schema_version": 1,
+  "version": "2.0.0",
+  "phase": "local stable-artifact validation before final platform run",
+  "local_validation_success": true,
+  "final_platform_validation": "pending",
+  "publication": "not performed",
+  "qualified_candidate_run": "https://github.com/empr0r/CB2pdf/actions/runs/41761823987",
+  "artifact_sha256": {
+    "cb2pdf-2.0.0-py3-none-any.whl": "6dac2384dba84ba42ee16c881c749ef1803429ae118d7c4a0374eed64fc793d1",
+    "cb2pdf-2.0.0.tar.gz": "fdb6102088c5bf8bb0110bd1de6b0605eefc34a699a7cff3028ee2ee0f213d35"
+  },
+  "source_sha256": "7509dc246e65a2d15d9b8a60fc87c9696a765ad0338846ffb84e00c7b6b45b01",
+  "environments": [
+    "py311-latest",
+    "py311-minimum",
+    "py312-latest",
+    "py313-latest",
+    "py314-basic",
+    "py314-latest"
+  ],
+  "test_slots": 714,
+  "executed_passing_tests": 695,
+  "expected_skips": 19,
+  "failures": 0,
+  "errors": 0,
+  "quality_gates": [
+    "mypy: 18 source files",
+    "pyflakes",
+    "pycodestyle",
+    "autopep8",
+    "compileall",
+    "Python 3.11 grammar",
+    "actionlint v1.7.12",
+    "Twine strict: wheel/sdist",
+    "dependency consistency: six environments"
+  ],
+  "audit_records_excluded_from_distribution_inputs": true
+}

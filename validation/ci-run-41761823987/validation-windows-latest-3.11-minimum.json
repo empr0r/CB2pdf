@@ -1,0 +1,127 @@
+{
+  "schema_version": 1,
+  "success": true,
+  "python": "3.11.9 (tags/v3.11.9:de54cf5, Apr  2 2024, 10:12:12) [MSC v.1938 64 bit (AMD64)]",
+  "platform": "Windows-10-10.0.26100-SP0",
+  "installed_package": "C:\\hostedtoolcache\\windows\\Python\\3.11.9\\x64\\Lib\\site-packages\\cb2pdf",
+  "artifact": "cb2pdf-2.0.0rc2-py3-none-any.whl",
+  "artifact_sha256": "8e733cd4511df4d3c26fc51e51046491031901bfd7ca097ebcf555bc28eaa39a",
+  "verified_wheel_entries": 19,
+  "dependencies": {
+    "cb2pdf": "2.0.0rc2",
+    "Pillow": "10.4.0",
+    "img2pdf": "0.6.3",
+    "pypdf": "6.12.0",
+    "pikepdf": "10.17.0",
+    "rarfile": "4.2"
+  },
+  "tests_run": 119,
+  "failures": [],
+  "errors": [],
+  "skipped": [
+    {
+      "test": "tests.test_images_pdf.ImagePdfTests.test_rendered_orientation_all_eight_modes",
+      "reason": "optional Poppler renderer unavailable"
+    },
+    {
+      "test": "tests.test_rar_compressed.CompressedRarTests.test_bsdtar_supported_variants_and_solid_rar4_error",
+      "reason": "RAR backend unavailable: bsdtar"
+    },
+    {
+      "test": "tests.test_rar_compressed.CompressedRarTests.test_literal_bsdtar_member_selectors",
+      "reason": "RAR backend unavailable: bsdtar"
+    },
+    {
+      "test": "tests.test_rar_compressed.CompressedRarTests.test_unar_round_trip",
+      "reason": "RAR backend unavailable: unar"
+    },
+    {
+      "test": "tests.test_rar_compressed.CompressedRarTests.test_unrar_round_trip",
+      "reason": "RAR backend unavailable: unrar"
+    }
+  ],
+  "backends": {
+    "unrar": null,
+    "unar": null,
+    "bsdtar": null,
+    "7z": "C:\\Program Files\\7-Zip\\7z.EXE"
+  },
+  "sevenzip_codec_profile": {
+    "returncode": 0,
+    "rar_decoders": [
+      "Rar1",
+      "Rar2",
+      "Rar3",
+      "Rar5"
+    ],
+    "version_header": "7-Zip 26.05 (x64) : Copyright (c) 1999-2026 Igor Pavlov : 2026-10-21",
+    "executable_path": "C:\\Program Files\\7-Zip\\7z.exe",
+    "executable_sha256": "94205cfc054dd3bbeb978905bc619a65b3f04e9e73bb2717841110b6f46d962e"
+  },
+  "cli": [
+    {
+      "arguments": [
+        "cb2pdf",
+        "--version"
+      ],
+      "returncode": 0,
+      "stdout": "cb2pdf 2.0.0rc2\n",
+      "stderr": ""
+    },
+    {
+      "arguments": [
+        "cb2pdf",
+        "benchmark",
+        "--quick",
+        "--trials",
+        "1",
+        "--output",
+        "installed-smoke.json"
+      ],
+      "returncode": 0,
+      "stdout": "Benchmark results: installed-smoke.json\n",
+      "stderr": ""
+    }
+  ],
+  "smoke": {
+    "schema_version": 1,
+    "environment": {
+      "platform": "Windows-10-10.0.26100-SP0",
+      "machine": "AMD64",
+      "processor": "AMD64 Family 25 Model 1 Stepping 1, AuthenticAMD",
+      "logical_cpus": 4,
+      "python": "3.11.9 (tags/v3.11.9:de54cf5, Apr  2 2024, 10:12:12) [MSC v.1938 64 bit (AMD64)]",
+      "cb2pdf": "2.0.0rc2",
+      "pillow": "10.4.0",
+      "img2pdf": "0.6.3",
+      "pypdf": "6.12.0",
+      "cpu_model": "AMD64 Family 25 Model 1 Stepping 1, AuthenticAMD",
+      "memory_total_bytes": null,
+      "source_sha256": "d1ddbda462662b227333af980a632b9dc648eac8c6c550c1d5770ab5d12fc7be",
+      "memory_note": "Linux: /proc/self/status VmHWM after conversion, since exec, including imports. Other POSIX: getrusage ru_maxrss (may include inherited high-water mark). Resource metrics unavailable on Windows."
+    },
+    "workers": 1,
+    "quick": true,
+    "trials": [
+      {
+        "process_wall_seconds": 0.3597106999999937,
+        "peak_temporary_bytes_sampled": 1117333,
+        "returncode": 0,
+        "stderr": "",
+        "conversion_wall_seconds": 0.07748900000001413,
+        "peak_rss_bytes": null,
+        "cpu_seconds": null,
+        "cpu_percent": null,
+        "conversion_errors": 0,
+        "expected_pages": 6,
+        "actual_pages": 6,
+        "exact_pixel_pages_in_correct_order": 6,
+        "jpeg_pages": 6,
+        "exact_jpeg_streams": 6,
+        "validation_errors": 0,
+        "output_bytes": 2233537,
+        "trial": 1
+      }
+    ]
+  }
+}
