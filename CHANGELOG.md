@@ -2,10 +2,12 @@
 
 ## 2.0.0rc2 — CI decoder compatibility (unpublished)
 
+- Rc2 CI passed all five Windows and all five macOS configurations. Pinned the verified upstream Linux 7-Zip 26.05 binary after reproducing the packaged RAR4 decoder crash; strict native-byte/pixel assertions remain. CI-only provisioning does not alter the application runtime. Reports now include decoder version and executable identity.
+
 - Added per-archive inspection of enabled 7-Zip RAR codecs. Distribution builds missing a required method now report a dependency error rather than a misleading corruption failure. Queries have a finite timeout.
 - Backend tests compare capability declarations with real native extraction of valid RAR4/RAR5 fixtures. Available methods still require exact output; unavailable methods must preserve the source and fail clearly. Added three parser regressions (119 tests total).
 - CI result JSON records 7-Zip codec profiles, failure excerpts appear in console logs, and artifact uploads include only the current job report/log.
-- Initial rc1 CI: build/quality, five Windows configurations and Linux basic passed. Ten Linux/macOS configurations exposed stripped 7-Zip codecs; rc2 requires another platform run before release.
+- Initial rc1 CI: build/quality, five Windows configurations and Linux basic passed. Ten Linux/macOS configurations exposed native 7-Zip incompatibilities; rc2 diagnostics separate missing codecs from a Linux native crash.
 
 ## 2.0.0rc1 — Release candidate (unpublished)
 

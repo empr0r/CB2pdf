@@ -1,6 +1,6 @@
 # CB2pdf
 
-**2.0.0rc2 — release candidate, not yet published.** The first platform CI run exposed missing RAR codecs in distribution 7-Zip builds. The correction is prepared; the next CI run remains a release gate. See the [release checklist](docs/releasing.md).
+**2.0.0rc2 — release candidate, not yet published.** Windows and macOS rc2 CI configurations passed. Linux CI is being updated to a verified decoder after its packaged 7-Zip crashed on valid RAR4 fixtures. The next platform run remains a release gate. See the [release checklist](docs/releasing.md).
 
 Convert CBZ/ZIP and CBR/RAR comic archives into complete, verified PDFs. The default preserves resolution, avoids lossy image recompression, and keeps original archives. Existing outputs are protected unless `--overwrite` is explicitly supplied.
 

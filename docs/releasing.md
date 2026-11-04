@@ -122,8 +122,8 @@ variants remain documented limitations rather than claims made by this release.
 [Run 41745898306](https://github.com/empr0r/CB2pdf/actions/runs/41745898306)
 validated rc1. Build/metadata and quality jobs passed, all five Windows cases
 passed, and the Linux basic-install case passed. The remaining ten jobs failed
-only in dedicated 7-Zip tests: installed distribution binaries omitted RAR
-decoders. Their other conversion, preservation and filesystem tests passed.
+only in dedicated 7-Zip tests: distribution 7-Zip variants could not decode the selected RAR fixtures.
+Subsequent diagnostics separated missing macOS codecs from a Linux native crash. Their other conversion, preservation and filesystem tests passed.
 This is a failed release gate, not a claim that all platforms are green.
 
 Candidate rc2 checks enabled methods in `7z i`'s Codecs section rather than
@@ -147,3 +147,29 @@ for all four compressed/solid fixtures. No decoder failure is silently skipped.
 
 Distribution details: [Ubuntu 7zip/optional RAR plugin](https://packages.ubuntu.com/noble/7zip),
 [Homebrew build configuration](https://github.com/Homebrew/homebrew-core/blob/HEAD/Formula/s/sevenzip.rb).
+
+## rc2 platform results and Linux decoder correction
+
+[Run 41760345855](https://github.com/empr0r/CB2pdf/actions/runs/41760345855)
+passed build/quality, all five Windows cases, all five macOS cases and Linux's
+basic install. Five Linux RAR-enabled jobs failed because their native 7-Zip
+process terminated with SIGSEGV (-11) on the valid RAR4 fixtures. The tests
+correctly rejected the crash despite the advertised Rar3 decoder. The earlier
+missing-codec explanation did not fully explain the Linux failure.
+
+An isolated reproduction with Ubuntu 7zip 23.01+dfsg-11 and its 23.01-4 RAR
+plugin produces the same crash on both RAR4 fixtures, while RAR5 succeeds.
+Official 7-Zip 26.05 decodes all four fixtures to their original bytes. CI now
+uses that exact upstream Linux binary in a job-owned temporary directory,
+verified against SHA-256
+`22cf82fcc6eb7474f1d5bb4f02c0f8ebd573a718089d6833dc30f8350a3b232e`
+before execution. No decoder binary is added to the repository or application
+distributions. The application runtime source and strict native extraction
+assertions are unchanged by this environment correction.
+
+Release reports also retain the selected 7-Zip version header, executable path
+and executable SHA-256 alongside its codec list. Codec availability establishes
+which methods are present; it cannot guarantee a native implementation is free
+of bugs. A crash remains a failed test. See
+[upstream release](https://github.com/ip7z/7zip/releases/tag/26.05) and the
+[retained second-run records](../validation/ci-run-41760345855/README.md).

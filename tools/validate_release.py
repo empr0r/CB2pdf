@@ -78,6 +78,10 @@ def probe(artifact: Path, report: Path, require_rar: bool) -> int:
         codec_profile = {
             "returncode": information.returncode,
             "rar_decoders": sorted(parse_sevenzip_decoders(information.stdout)),
+            "version_header": next((line.strip() for line in information.stdout.splitlines()
+                                    if "7-Zip" in line), "unreported"),
+            "executable_path": str(Path(sevenzip).resolve()),
+            "executable_sha256": hashlib.sha256(Path(sevenzip).read_bytes()).hexdigest(),
         }
     record = {
         "schema_version": 1, "success": success, "python": sys.version,

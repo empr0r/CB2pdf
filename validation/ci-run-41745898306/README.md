@@ -14,8 +14,10 @@ reading its current-job `result.json`.
 
 There were no other test failures/errors in these reports. The native backends
 chosen by default (Linux UnRAR and macOS unar) passed the compressed/solid
-round trips. Installed 7-Zip distribution builds lacked the necessary decoders,
-which the original optional-backend tests had incorrectly assumed were present.
+round trips. The first diagnostics did not distinguish missing codecs from broken native
+implementations. Rc2 established that macOS lacked RAR methods and Linux
+crashed while advertising support; the subsequent report corrects the initial
+explanation without changing these raw results.
 Stored-RAR, other image/PDF, ordering, source-safety and CLI tests passed.
 Windows skips for unavailable Unix decoders/Poppler remain explicit in JSON.
 
