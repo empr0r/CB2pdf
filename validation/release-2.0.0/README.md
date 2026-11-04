@@ -1,5 +1,10 @@
 # Local stable-artifact validation
 
+**Final status:** [final-report.json](final-report.json) and
+[the engineering report](FINAL-REPORT.md) are the completed release receipt.
+All eighteen final CI jobs passed. The local `summary.json` below remains the
+immutable pre-platform-run snapshot; it is not the current readiness verdict.
+
 The final version 2.0.0 wheel/source archive were rebuilt after the rc2
 implementation passed all sixteen platform/dependency cases. Application
 behavior is unchanged; package/module versions agree on 2.0.0.
