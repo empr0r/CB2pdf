@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "success": true,
+  "package_version": "2.0.0rc2",
+  "package_path": "/home/empr0r/Documents/GitHub/CB2pdf/benchmarks/work/release/py314-latest/lib/python3.14/site-packages/cb2pdf/__init__.py",
+  "backend": "Ubuntu 7zip 23.01+dfsg-11 (isolated package)",
+  "package_sha256": "0f79450d81e64326a862a8645ae1613890e486115101e51e41ca07d929388d87",
+  "rar_decoders": [],
+  "results": [
+    {
+      "fixture": "rar4-compressed.cbr",
+      "status": "failed",
+      "error_type": "MissingDependencyError",
+      "error": "selected 7-Zip build lacks RAR decoder(s): Rar3; install its RAR codec package, full 7-Zip, unrar, or unar",
+      "source_unchanged": true,
+      "pdf_published": false
+    },
+    {
+      "fixture": "rar4-solid.cbr",
+      "status": "failed",
+      "error_type": "MissingDependencyError",
+      "error": "selected 7-Zip build lacks RAR decoder(s): Rar3; install its RAR codec package, full 7-Zip, unrar, or unar",
+      "source_unchanged": true,
+      "pdf_published": false
+    },
+    {
+      "fixture": "rar5-compressed.cbr",
+      "status": "failed",
+      "error_type": "MissingDependencyError",
+      "error": "selected 7-Zip build lacks RAR decoder(s): Rar5; install its RAR codec package, full 7-Zip, unrar, or unar",
+      "source_unchanged": true,
+      "pdf_published": false
+    },
+    {
+      "fixture": "rar5-solid.cbr",
+      "status": "failed",
+      "error_type": "MissingDependencyError",
+      "error": "selected 7-Zip build lacks RAR decoder(s): Rar5; install its RAR codec package, full 7-Zip, unrar, or unar",
+      "source_unchanged": true,
+      "pdf_published": false
+    }
+  ]
+}

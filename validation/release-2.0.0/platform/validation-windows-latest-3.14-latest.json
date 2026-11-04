@@ -1,0 +1,127 @@
+{
+  "schema_version": 1,
+  "success": true,
+  "python": "3.14.10 (tags/v3.14.10:b703b2c, Oct 25 2026, 17:36:52) [MSC v.1944 64 bit (AMD64)]",
+  "platform": "Windows-2025Server-10.0.26100-SP0",
+  "installed_package": "C:\\hostedtoolcache\\windows\\Python\\3.14.10\\x64\\Lib\\site-packages\\cb2pdf",
+  "artifact": "cb2pdf-2.0.0-py3-none-any.whl",
+  "artifact_sha256": "d6162647056024fa360b9cfeae980cac62fb76c0cb7578a4e6367cf1f74bae8a",
+  "verified_wheel_entries": 19,
+  "dependencies": {
+    "cb2pdf": "2.0.0",
+    "Pillow": "13.0.0",
+    "img2pdf": "0.6.3",
+    "pypdf": "6.21.4",
+    "pikepdf": "10.17.0",
+    "rarfile": "4.5"
+  },
+  "tests_run": 119,
+  "failures": [],
+  "errors": [],
+  "skipped": [
+    {
+      "test": "tests.test_images_pdf.ImagePdfTests.test_rendered_orientation_all_eight_modes",
+      "reason": "optional Poppler renderer unavailable"
+    },
+    {
+      "test": "tests.test_rar_compressed.CompressedRarTests.test_bsdtar_supported_variants_and_solid_rar4_error",
+      "reason": "RAR backend unavailable: bsdtar"
+    },
+    {
+      "test": "tests.test_rar_compressed.CompressedRarTests.test_literal_bsdtar_member_selectors",
+      "reason": "RAR backend unavailable: bsdtar"
+    },
+    {
+      "test": "tests.test_rar_compressed.CompressedRarTests.test_unar_round_trip",
+      "reason": "RAR backend unavailable: unar"
+    },
+    {
+      "test": "tests.test_rar_compressed.CompressedRarTests.test_unrar_round_trip",
+      "reason": "RAR backend unavailable: unrar"
+    }
+  ],
+  "backends": {
+    "unrar": null,
+    "unar": null,
+    "bsdtar": null,
+    "7z": "C:\\Program Files\\7-Zip\\7z.EXE"
+  },
+  "sevenzip_codec_profile": {
+    "returncode": 0,
+    "rar_decoders": [
+      "Rar1",
+      "Rar2",
+      "Rar3",
+      "Rar5"
+    ],
+    "version_header": "7-Zip 26.05 (x64) : Copyright (c) 1999-2026 Igor Pavlov : 2026-10-21",
+    "executable_path": "C:\\Program Files\\7-Zip\\7z.exe",
+    "executable_sha256": "94205cfc054dd3bbeb978905bc619a65b3f04e9e73bb2717841110b6f46d962e"
+  },
+  "cli": [
+    {
+      "arguments": [
+        "cb2pdf",
+        "--version"
+      ],
+      "returncode": 0,
+      "stdout": "cb2pdf 2.0.0\n",
+      "stderr": ""
+    },
+    {
+      "arguments": [
+        "cb2pdf",
+        "benchmark",
+        "--quick",
+        "--trials",
+        "1",
+        "--output",
+        "installed-smoke.json"
+      ],
+      "returncode": 0,
+      "stdout": "Benchmark results: installed-smoke.json\n",
+      "stderr": ""
+    }
+  ],
+  "smoke": {
+    "schema_version": 1,
+    "environment": {
+      "platform": "Windows-2025Server-10.0.26100-SP0",
+      "machine": "AMD64",
+      "processor": "AMD64 Family 25 Model 1 Stepping 1, AuthenticAMD",
+      "logical_cpus": 4,
+      "python": "3.14.10 (tags/v3.14.10:b703b2c, Oct 25 2026, 17:36:52) [MSC v.1944 64 bit (AMD64)]",
+      "cb2pdf": "2.0.0",
+      "pillow": "13.0.0",
+      "img2pdf": "0.6.3",
+      "pypdf": "6.21.4",
+      "cpu_model": "AMD64 Family 25 Model 1 Stepping 1, AuthenticAMD",
+      "memory_total_bytes": null,
+      "source_sha256": "7509dc246e65a2d15d9b8a60fc87c9696a765ad0338846ffb84e00c7b6b45b01",
+      "memory_note": "Linux: /proc/self/status VmHWM after conversion, since exec, including imports. Other POSIX: getrusage ru_maxrss (may include inherited high-water mark). Resource metrics unavailable on Windows."
+    },
+    "workers": 1,
+    "quick": true,
+    "trials": [
+      {
+        "process_wall_seconds": 0.35340550000000803,
+        "peak_temporary_bytes_sampled": 1117333,
+        "returncode": 0,
+        "stderr": "",
+        "conversion_wall_seconds": 0.07290690000002087,
+        "peak_rss_bytes": null,
+        "cpu_seconds": null,
+        "cpu_percent": null,
+        "conversion_errors": 0,
+        "expected_pages": 6,
+        "actual_pages": 6,
+        "exact_pixel_pages_in_correct_order": 6,
+        "jpeg_pages": 6,
+        "exact_jpeg_streams": 6,
+        "validation_errors": 0,
+        "output_bytes": 2233537,
+        "trial": 1
+      }
+    ]
+  }
+}

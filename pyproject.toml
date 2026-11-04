@@ -1,0 +1,43 @@
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "cb2pdf"
+version = "2.0.0"
+description = "Preserving comic archive conversion with verified, transactional PDF output"
+readme = "README.md"
+requires-python = ">=3.11"
+license = "MIT"
+authors = [{name = "empr0r"}]
+dependencies = ["Pillow>=10.4", "img2pdf>=0.6.3,<0.7", "pypdf>=6.12,<7"]
+
+[project.optional-dependencies]
+rar = ["rarfile>=4.2,<5"]
+dev = ["autopep8==2.3.2", "pycodestyle==2.14.0", "pyflakes==3.4.0", "mypy==1.18.2", "build>=1.2"]
+benchmark = ["natsort>=8.4", "rarfile>=4.2,<5", "tqdm>=4.66"]
+
+[project.scripts]
+cb2pdf = "cb2pdf.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+cb2pdf = ["py.typed"]
+
+[tool.mypy]
+python_version = "3.11"
+files = ["src/cb2pdf"]
+check_untyped_defs = true
+disallow_untyped_defs = true
+warn_unused_ignores = true
+
+[[tool.mypy.overrides]]
+module = ["img2pdf", "rarfile"]
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = ["numpy", "numpy.*"]
+follow_imports = "skip"
+follow_imports_for_stubs = true

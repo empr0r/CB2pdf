@@ -1,0 +1,104 @@
+{
+  "schema_version": 1,
+  "success": false,
+  "python": "3.12.10 (v3.12.10:0cc81280367, Apr  8 2025, 08:46:59) [Clang 13.0.0 (clang-1300.0.29.30)]",
+  "platform": "macOS-26.6.2-arm64-arm-64bit",
+  "installed_package": "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/cb2pdf",
+  "artifact": "cb2pdf-2.0.0rc1-py3-none-any.whl",
+  "artifact_sha256": "ba3624448aec85c57e2a1fc68d46bf6018628849a751a00d2c02511ec9825584",
+  "verified_wheel_entries": 19,
+  "dependencies": {
+    "cb2pdf": "2.0.0rc1",
+    "Pillow": "13.0.0",
+    "img2pdf": "0.6.3",
+    "pypdf": "6.21.4",
+    "pikepdf": "10.17.0",
+    "rarfile": "4.5"
+  },
+  "tests_run": 116,
+  "failures": [],
+  "errors": [
+    "tests.test_rar_compressed.CompressedRarTests.test_sevenzip_round_trip (backend='sevenzip', fixture='rar4-compressed.cbr')",
+    "tests.test_rar_compressed.CompressedRarTests.test_sevenzip_round_trip (backend='sevenzip', fixture='rar4-solid.cbr')",
+    "tests.test_rar_compressed.CompressedRarTests.test_sevenzip_round_trip (backend='sevenzip', fixture='rar5-compressed.cbr')",
+    "tests.test_rar_compressed.CompressedRarTests.test_sevenzip_round_trip (backend='sevenzip', fixture='rar5-solid.cbr')"
+  ],
+  "skipped": [
+    {
+      "test": "tests.test_rar_compressed.CompressedRarTests.test_unrar_round_trip",
+      "reason": "RAR backend unavailable: unrar"
+    }
+  ],
+  "backends": {
+    "unrar": null,
+    "unar": "/opt/homebrew/bin/unar",
+    "bsdtar": "/usr/bin/bsdtar",
+    "7z": "/opt/homebrew/bin/7z"
+  },
+  "cli": [
+    {
+      "arguments": [
+        "cb2pdf",
+        "--version"
+      ],
+      "returncode": 0,
+      "stdout": "cb2pdf 2.0.0rc1\n",
+      "stderr": ""
+    },
+    {
+      "arguments": [
+        "cb2pdf",
+        "benchmark",
+        "--quick",
+        "--trials",
+        "1",
+        "--output",
+        "installed-smoke.json"
+      ],
+      "returncode": 0,
+      "stdout": "Benchmark results: installed-smoke.json\n",
+      "stderr": ""
+    }
+  ],
+  "smoke": {
+    "schema_version": 1,
+    "environment": {
+      "platform": "macOS-26.6.2-arm64-arm-64bit",
+      "machine": "arm64",
+      "processor": "arm",
+      "logical_cpus": 3,
+      "python": "3.12.10 (v3.12.10:0cc81280367, Apr  8 2025, 08:46:59) [Clang 13.0.0 (clang-1300.0.29.30)]",
+      "cb2pdf": "2.0.0rc1",
+      "pillow": "13.0.0",
+      "img2pdf": "0.6.3",
+      "pypdf": "6.21.4",
+      "cpu_model": "arm",
+      "memory_total_bytes": null,
+      "source_sha256": "808c7815c7f016aa0a1b0c7e7be456f9271a0e73fa54deb39c36493cc208847c",
+      "memory_note": "Linux: /proc/self/status VmHWM after conversion, since exec, including imports. Other POSIX: getrusage ru_maxrss (may include inherited high-water mark). Resource metrics unavailable on Windows."
+    },
+    "workers": 1,
+    "quick": true,
+    "trials": [
+      {
+        "process_wall_seconds": 0.17145212500000184,
+        "peak_temporary_bytes_sampled": 0,
+        "returncode": 0,
+        "stderr": "",
+        "conversion_wall_seconds": 0.013855457999994769,
+        "peak_rss_bytes": 45662208,
+        "cpu_seconds": 0.01327399999999998,
+        "cpu_percent": 95.80340108573093,
+        "conversion_errors": 0,
+        "expected_pages": 6,
+        "actual_pages": 6,
+        "exact_pixel_pages_in_correct_order": 6,
+        "jpeg_pages": 6,
+        "exact_jpeg_streams": 6,
+        "validation_errors": 0,
+        "output_bytes": 2233537,
+        "trial": 1
+      }
+    ]
+  }
+}

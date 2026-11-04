@@ -1,0 +1,21 @@
+{
+  "generator": "tools/make_rar_fixtures.py",
+  "archives": {
+    "rar4-compressed.cbr": "e9073990c61adb3b517bf716adf1334b3d0cd6eaa3a21f45a9145b6282d99837",
+    "rar4-solid.cbr": "9c98ce98c18156ee7b9325b753a31376b57b60a32e299e064799213cb10cddd9",
+    "rar5-compressed.cbr": "e31e9d391ad9fff96a1c40b1a29e90376e207fa10dd0cef6dbf568698d969bfa",
+    "rar5-solid.cbr": "4441da1e9af8019ffd534a3d23d53b8fae48eb145b7bcf1b6f2dd406ad11e309"
+  },
+  "members": {
+    "chapter/page1.bmp": "38eccaa088501da33097f41282726631d80db89ad0610b060bbb8b383d5b19c8",
+    "chapter/page2.bmp": "cfe77909bb80dbfeecf2d892b1fb43cc3316379a731cee7c5a586b2c06f4f778",
+    "chapter/page10.png": "24b90e717320a3032ec43157b8c9c48221a95e7800b4c5bb7718006dd277f79c"
+  },
+  "special_names": {
+    "sha256": "a159b164542d71e258ea61aae81af1a1a77afbc487d3e66e50f94fbe2a3e94f1",
+    "members": {
+      "selectors/-cover[1]$(ignored).bmp": "38eccaa088501da33097f41282726631d80db89ad0610b060bbb8b383d5b19c8",
+      "selectors/-cover1$(ignored).bmp": "cfe77909bb80dbfeecf2d892b1fb43cc3316379a731cee7c5a586b2c06f4f778"
+    }
+  }
+}

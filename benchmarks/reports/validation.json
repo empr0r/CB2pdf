@@ -1,0 +1,57 @@
+{
+  "implementation_commit": "796a341",
+  "source_sha256": "ac37d8753c63e8b5db7df4a28edbefc71f4a65cbe1754af016056e1d3a10723f",
+  "unit_integration_regression_security": {
+    "runner": "unittest",
+    "tests_passed": 81,
+    "failures": 0,
+    "skips": 0
+  },
+  "mypy": {
+    "version": "1.18.2",
+    "modules_checked": 15,
+    "errors": 0
+  },
+  "lint": [
+    "pyflakes 3.4.0",
+    "pycodestyle 2.14.0; 100-column limit"
+  ],
+  "formatting": "autopep8 2.3.2 diff/exit-code checks passed",
+  "syntax": [
+    "compileall passed",
+    "25 maintained application/test/launcher files parse with Python 3.11 grammar"
+  ],
+  "packaging": [
+    "setuptools PEP 517 wheel/sdist built",
+    "offline editable install passed",
+    "isolated wheel install and CLI/self-benchmark passed",
+    "private fixtures excluded from sdist"
+  ],
+  "cross_filesystem_archival": {
+    "source_device": 39,
+    "target_device": 47,
+    "status": "success",
+    "archive_sha256_identical": true
+  },
+  "failure_descriptor_check": {
+    "controlled_failures": 100,
+    "before": 4,
+    "after": 4
+  },
+  "independent_pdf_checks": [
+    "Poppler rendered all eight EXIF orientations",
+    "pdfinfo accepted three real-content outputs",
+    "Poppler extracted source grayscale page matched exported fixture pixels"
+  ],
+  "limitations": [
+    "Only Linux/Python 3.14 runtime tested locally",
+    "Remote CI not run",
+    "Dependencies source-loaded because network package resolution was unavailable",
+    "Compressed/solid RAR5 not verified",
+    "Memory accounting is not an OS-enforced cap"
+  ],
+  "canonical_implementation_commit": "d35c6c4",
+  "canonical_repository": "/home/empr0r/Documents/GitHub/CB2pdf",
+  "upstream_history_preserved": true,
+  "migration_verification": "81 tests passed in the canonical checkout; source modules unchanged; executable launcher mode retained from upstream."
+}

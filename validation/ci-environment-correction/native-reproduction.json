@@ -1,0 +1,75 @@
+{
+  "schema_version": 1,
+  "success": true,
+  "meaning": "Native crash reproduced; official decoder passes; no application/test assertions weakened",
+  "ubuntu_7zip_package_sha256": "0f79450d81e64326a862a8645ae1613890e486115101e51e41ca07d929388d87",
+  "ubuntu_rar_plugin_package_sha256": "820c21aec0154832ff5f62fa8149a3fa1e5b695babcd5a0739343e78829fc83d",
+  "official_7zip_archive_sha256": "22cf82fcc6eb7474f1d5bb4f02c0f8ebd573a718089d6833dc30f8350a3b232e",
+  "core_dumps_disabled_for_reproduction": true,
+  "results": [
+    {
+      "backend": "ubuntu-23.01-with-rar",
+      "fixture": "rar4-compressed.cbr",
+      "returncode": -11,
+      "stdout_bytes": 0,
+      "exact_original_bytes": false,
+      "stderr": ""
+    },
+    {
+      "backend": "ubuntu-23.01-with-rar",
+      "fixture": "rar4-solid.cbr",
+      "returncode": -11,
+      "stdout_bytes": 0,
+      "exact_original_bytes": false,
+      "stderr": ""
+    },
+    {
+      "backend": "ubuntu-23.01-with-rar",
+      "fixture": "rar5-compressed.cbr",
+      "returncode": 0,
+      "stdout_bytes": 18486,
+      "exact_original_bytes": true,
+      "stderr": ""
+    },
+    {
+      "backend": "ubuntu-23.01-with-rar",
+      "fixture": "rar5-solid.cbr",
+      "returncode": 0,
+      "stdout_bytes": 18486,
+      "exact_original_bytes": true,
+      "stderr": ""
+    },
+    {
+      "backend": "official-26.05",
+      "fixture": "rar4-compressed.cbr",
+      "returncode": 0,
+      "stdout_bytes": 18486,
+      "exact_original_bytes": true,
+      "stderr": ""
+    },
+    {
+      "backend": "official-26.05",
+      "fixture": "rar4-solid.cbr",
+      "returncode": 0,
+      "stdout_bytes": 18486,
+      "exact_original_bytes": true,
+      "stderr": ""
+    },
+    {
+      "backend": "official-26.05",
+      "fixture": "rar5-compressed.cbr",
+      "returncode": 0,
+      "stdout_bytes": 18486,
+      "exact_original_bytes": true,
+      "stderr": ""
+    },
+    {
+      "backend": "official-26.05",
+      "fixture": "rar5-solid.cbr",
+      "returncode": 0,
+      "stdout_bytes": 18486,
+      "exact_original_bytes": true,
+      "stderr": ""
+    }
+  ]
+}

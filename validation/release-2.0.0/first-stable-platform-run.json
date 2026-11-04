@@ -1,0 +1,100 @@
+{
+  "schema_version": 1,
+  "run_id": 41763211877,
+  "url": "https://github.com/empr0r/CB2pdf/actions/runs/41763211877",
+  "commit": "1653c35a42880a37add177a0d88cdffc8cfb85f3",
+  "conclusion": "success",
+  "jobs": [
+    {
+      "id": 126355464579,
+      "name": "build",
+      "conclusion": "success"
+    },
+    {
+      "id": 126355589710,
+      "name": "quality",
+      "conclusion": "success"
+    },
+    {
+      "id": 126355589764,
+      "name": "test (ubuntu-latest, 3.12, latest)",
+      "conclusion": "success"
+    },
+    {
+      "id": 126355589809,
+      "name": "test (windows-latest, 3.13, latest)",
+      "conclusion": "success"
+    },
+    {
+      "id": 126355589810,
+      "name": "test (ubuntu-latest, 3.11, latest)",
+      "conclusion": "success"
+    },
+    {
+      "id": 126355589817,
+      "name": "test (macos-latest, 3.13, latest)",
+      "conclusion": "success"
+    },
+    {
+      "id": 126355589826,
+      "name": "test (ubuntu-latest, 3.13, latest)",
+      "conclusion": "success"
+    },
+    {
+      "id": 126355589836,
+      "name": "test (windows-latest, 3.12, latest)",
+      "conclusion": "success"
+    },
+    {
+      "id": 126355589857,
+      "name": "test (macos-latest, 3.11, latest)",
+      "conclusion": "success"
+    },
+    {
+      "id": 126355589897,
+      "name": "test (windows-latest, 3.14, latest)",
+      "conclusion": "success"
+    },
+    {
+      "id": 126355589899,
+      "name": "test (ubuntu-latest, 3.14, latest)",
+      "conclusion": "success"
+    },
+    {
+      "id": 126355589917,
+      "name": "test (macos-latest, 3.12, latest)",
+      "conclusion": "success"
+    },
+    {
+      "id": 126355589934,
+      "name": "test (windows-latest, 3.11, minimum)",
+      "conclusion": "success"
+    },
+    {
+      "id": 126355589941,
+      "name": "test (macos-latest, 3.14, latest)",
+      "conclusion": "success"
+    },
+    {
+      "id": 126355589944,
+      "name": "test (ubuntu-latest, 3.14, basic)",
+      "conclusion": "success"
+    },
+    {
+      "id": 126355589957,
+      "name": "test (ubuntu-latest, 3.11, minimum)",
+      "conclusion": "success"
+    },
+    {
+      "id": 126355590014,
+      "name": "test (macos-latest, 3.11, minimum)",
+      "conclusion": "success"
+    },
+    {
+      "id": 126355590081,
+      "name": "test (windows-latest, 3.11, latest)",
+      "conclusion": "success"
+    }
+  ],
+  "note": "Stable-version platform qualification before documentation status cleanup; final delivery retains the following run's exact artifacts."
+}

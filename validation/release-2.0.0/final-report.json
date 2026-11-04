@@ -1,0 +1,59 @@
+{
+  "schema_version": 1,
+  "version": "2.0.0",
+  "ready_for_publication": true,
+  "publication_performed": false,
+  "remote_tag_created": false,
+  "default_branch_merged": false,
+  "tested_commit": "22b2beb1d2a23304f8ec0593dc67049ecbb00a6d",
+  "ci_run_id": 41763768811,
+  "ci_url": "https://github.com/empr0r/CB2pdf/actions/runs/41763768811",
+  "all_jobs_passed": 18,
+  "installed_artifact_configurations": 16,
+  "test_suite_size": 119,
+  "executed_passing_platform_tests": 1855,
+  "expected_platform_skips": 49,
+  "skip_reasons": {
+    "optional Poppler renderer unavailable": 5,
+    "RAR backend unavailable: bsdtar": 10,
+    "RAR backend unavailable: unar": 10,
+    "RAR backend unavailable: unrar": 10,
+    "optional rarfile dependency unavailable": 14
+  },
+  "failures": 0,
+  "errors": 0,
+  "source_sha256": "7509dc246e65a2d15d9b8a60fc87c9696a765ad0338846ffb84e00c7b6b45b01",
+  "delivery_directory": "dist/2.0.0/ci-tested",
+  "delivery_artifact_sha256": {
+    "cb2pdf-2.0.0-py3-none-any.whl": "d6162647056024fa360b9cfeae980cac62fb76c0cb7578a4e6367cf1f74bae8a",
+    "cb2pdf-2.0.0.tar.gz": "2047e149222e71c02d569955ab865f27ce91848c2e6c2e2f6895960c16051ada"
+  },
+  "delivery_policy": "Exact CI-built bytes; the same wheel passed all sixteen installed-artifact jobs. No rebuild substituted for that wheel.",
+  "additional_local_validation": "Six local stable-wheel environments passed 695 executed tests with 19 expected skips. The exact CI wheel was separately installed and smoke-tested locally.",
+  "quality_gates": [
+    "strict Twine metadata validation for delivered wheel and sdist",
+    "mypy: 18 source files",
+    "pyflakes",
+    "pycodestyle",
+    "autopep8",
+    "compileall",
+    "Python 3.11 grammar",
+    "actionlint",
+    "dependency consistency",
+    "wheel package matches current source",
+    "source distribution matches 82 current repository files",
+    "private work and audit-only records excluded from distributions"
+  ],
+  "documented_limits": [
+    "Hard-link support required for no-overwrite atomic publication",
+    "Native decoding cancellation/resource accounting are not hard OS isolation",
+    "Encrypted, split/multivolume and self-extracting archives unsupported",
+    "Unusual color/high-bit-depth combinations and extreme PDF sizes need broader corpus validation",
+    "Default JPEG inspection validates headers; --decode-verify adds pixel decoding",
+    "No standalone executables distributed"
+  ],
+  "remaining_publication_steps": [
+    "Explicit approval before merge, remote tag, package-index upload or GitHub release",
+    "Select the exact reviewed CI-built artifacts and tested commit when publishing"
+  ]
+}
