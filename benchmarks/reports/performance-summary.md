@@ -1,5 +1,9 @@
 # Performance follow-up
 
+This report describes the optimization measurements at commit `fd1dc7f`.
+It predates final CBR diagnostics and fresh dependency resolution. Current
+platform qualification is recorded in [release validation](../../docs/releasing.md).
+
 The optimized implementation completed every synthetic page with exact ordered
 pixels in all five trials. It beat the retained fork's median conversion time
 in all five synthetic workloads where the fork also produced complete,
@@ -122,12 +126,12 @@ bounds, not total I/O volume.
 
 The existing original-script comparison remains in `comparison.json`; this
 follow-up measures the previous redesign against the optimization and fork.
-Development reports remain labeled and are not final performance evidence.
+Superseded development reports are indexed in [the report archive](README.md).
 Other platforms/runtimes, pikepdf, compressed CBR throughput, cold-cache behavior
-and hard memory/time isolation remain unmeasured. The existing platform CI
-matrix is configured but has not been run remotely.
+and hard memory/time isolation remain unmeasured. Later cross-platform
+correctness runs passed; those do not establish cross-platform performance.
 
-## Final validation
+## Validation at the measured revision
 
 - 107 unit/integration/regression/security tests passed with no skips or failures,
   including independent Poppler rendering of all eight orientation modes.
@@ -139,7 +143,7 @@ matrix is configured but has not been run remotely.
   excluded. The wheel installed offline into an isolated environment and its
   actual installed CLI passed `--version` and a six-page self-benchmark with
   exact pixels and original JPEG streams. See
-  [installed-wheel record](performance-wheel-smoke.json).
+  [archived installed-wheel record](https://github.com/empr0r/CB2pdf/blob/362900da51e1019c968c9e3bd1677e9c4c853837/benchmarks/reports/performance-wheel-smoke.json).
 - All original JPEG streams were byte-identical in every optimized comparison
   trial. All required page/pixel checks passed; baseline/current output sizes
   matched. Fixture input hashes were unchanged.

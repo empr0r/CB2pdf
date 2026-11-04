@@ -1,5 +1,8 @@
 # Measured comparison
 
+This initial comparison predates the performance optimization. For the later
+five-trial measurements, see [the performance summary](performance-summary.md).
+
 Fixed-seed textured images. Fresh process per trial. Original batch sleep=0; fork sequential; default quality policies differ. Conversion includes redesign verification/fsync. Fidelity is checked outside timing for every page. Temporary logical byte samples every 5 ms are lower bounds. CBR not measured: no representative comic RAR fixture.
 
 | Workload | Implementation | Workers | Median seconds | Peak RSS MiB | Output MiB | Exact ordered pixels | Pages |
@@ -29,4 +32,4 @@ Fixed-seed textured images. Fresh process per trial. Original batch sleep=0; for
 | small-jpeg | original | 1 | 0.1459 | 61.7 | 2.72 | 0/12 | 12/12 |
 | small-jpeg | redesigned | 1 | 0.0467 | 59.8 | 10.90 | 12/12 | 12/12 |
 
-The measured source predates a cleanup-only change that attempts temporary unlink even if buffered close fails. Successful conversion logic is unchanged; final-smoke.json and the final test suite validate that revision. Dependency source loading and the absence of pikepdf are recorded in the JSON environment metadata.
+The measured source predates a cleanup-only change that attempts temporary unlink even if buffered close fails. Successful conversion logic is unchanged; the [archived final smoke record](https://github.com/empr0r/CB2pdf/blob/362900da51e1019c968c9e3bd1677e9c4c853837/benchmarks/reports/final-smoke.json) and that revision's test suite validated the change. Dependency source loading and the absence of pikepdf are recorded in the JSON environment metadata.

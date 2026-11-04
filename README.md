@@ -1,94 +1,141 @@
+<div align="center">
+
 # CB2pdf
 
-**2.0.0 — validated implementation, publication pending.** All 16 platform/dependency CI configurations passed. The [release procedure](docs/releasing.md) and retained evidence identify the exact builds tested.
+**Comics in. Verified PDFs out.**
 
-Convert CBZ/ZIP and CBR/RAR comic archives into complete, verified PDFs. The default preserves resolution, avoids lossy image recompression, and keeps original archives. Existing outputs are protected unless `--overwrite` is explicitly supplied.
+Convert CBZ and CBR archives while preserving image quality and protecting your originals.
 
-## Installation
+[![CI](https://github.com/empr0r/CB2pdf/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/empr0r/CB2pdf/actions/workflows/ci.yml)
+[![Python](https://img.shields.io/badge/Python-3.11%2B-3776AB?logo=python&logoColor=white)](pyproject.toml)
+[![Version](https://img.shields.io/badge/version-2.0.0-249b78)](CHANGELOG.md)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
-Python 3.11 or newer is required. Fresh installed-wheel tests pass locally on Linux with Python 3.11–3.14, latest dependencies, and the minimum runtime dependencies on Python 3.11. Sixteen CI configurations cover those runtimes plus dependency-floor checks on Linux, Windows and macOS. Retained release evidence records exact artifact identities and expected backend/renderer skips.
+[Quick start](#quick-start) · [Usage](#usage) · [RAR setup](#rar-setup) · [Documentation](#documentation)
+
+</div>
+
+## Why CB2pdf?
+
+- **Preserve the pages.** Original resolution by default, with direct JPEG and compatible PNG embedding to avoid recompression.
+- **Protect your library.** Originals stay put; existing PDFs are protected unless you explicitly request an overwrite.
+- **Get the order right.** Natural sorting handles `page1`, `page2`, `page10` and nested chapters.
+- **Handle more formats.** JPEG, PNG, WebP, BMP, GIF and TIFF, including animation frames and multipage images.
+- **Choose the tradeoff.** Lossless, balanced and small profiles, plus optional resizing, DPI and page layout.
+- **Convert a whole shelf.** Recursive discovery, bounded workers, dry runs and per-volume JSON reports.
+
+## Quick start
+
+Requires **Python 3.11+**. The validation matrix covers Python 3.11–3.14 on Linux, Windows and macOS.
 
 ```sh
+git clone https://github.com/empr0r/CB2pdf.git
+cd CB2pdf
 python -m venv .venv
-# Linux / macOS
-source .venv/bin/activate
-# Windows PowerShell
-.venv\Scripts\Activate.ps1
-python -m pip install .
-# Optional RAR support
-python -m pip install '.[rar]'
 ```
 
-RAR also requires a compatible executable on PATH: `unrar`, `unar`, `7z`, or `bsdtar`. On Arch Linux, install `unrar` with `sudo pacman -S unrar`. On Debian/Ubuntu, `sudo apt install libarchive-tools` provides bsdtar. On macOS, try the system bsdtar or install unar. On Windows, add the folder containing UnRAR.exe or 7z.exe to PATH. UnRAR and 7-Zip pass the included compressed/solid RAR4/RAR5 fixtures on Linux. Bsdtar passes ordinary RAR4 and ordinary/solid RAR5; solid RAR4 requires another decoder and produces an actionable error.
+Activate the environment for your shell:
 
-The runtime uses Pillow, img2pdf, and pypdf. The img2pdf distribution also depends on pikepdf; CB2pdf intentionally selects img2pdf's internal writer for consistent behavior across environments. No external PDF renderer is needed for conversion.
+| Shell | Command |
+|---|---|
+| Linux / macOS | `source .venv/bin/activate` |
+| Windows PowerShell | `.\.venv\Scripts\Activate.ps1` |
+
+Then install and convert:
+
+```sh
+python -m pip install .
+cb2pdf convert comic.cbz
+```
+
+The PDF is created alongside the archive. The original is kept. Use `python -m cb2pdf` if the console command is not on PATH.
+
+For CBR files, complete the optional [RAR setup](#rar-setup) below.
 
 ## Usage
 
 ```sh
-cb2pdf convert comic.cbz
-cb2pdf convert comic.cbr another.cbz --output ./pdfs
-cb2pdf convert ./library --recursive --workers 2
-cb2pdf convert comic.cbz --quality balanced
+# Convert multiple volumes into one output directory
+cb2pdf convert volume1.cbz volume2.cbr --output ./pdfs
+
+# Convert a library, preserving its directory structure under ./pdfs
+cb2pdf convert ./library --recursive --output ./pdfs --workers 2
+
+# Inspect an archive or preview a batch
+cb2pdf inspect comic.cbz
+cb2pdf convert ./library --recursive --dry-run
+
+# Create smaller pages or fit a fixed PDF layout
 cb2pdf convert comic.cbz --quality small --jpeg-quality 80
 cb2pdf convert comic.cbz --max-size 2560
 cb2pdf convert comic.cbz --page-size a4 --dpi 300
-cb2pdf convert comic.cbz --keep-original
+
+# Archive originals after verified PDF creation
 cb2pdf convert comic.cbz --move-original ./archive
-cb2pdf convert comic.cbz --dry-run
+
+# Save conversion details, including page transformations
 cb2pdf convert ./library --report conversion.json --log-file conversion.log --json-logs
-cb2pdf inspect comic.cbz
-cb2pdf benchmark --quick --trials 3 --output benchmark-results.json
-cb2pdf --version
 ```
 
-Use `python -m cb2pdf` if the console command is not on PATH. `--output` names a directory; recursive conversion preserves the input directory structure beneath it. Multiple roots that would produce the same output are rejected before conversion. Individual files are identified by signature, so a ZIP mislabeled `.cbr` is accepted. Directory discovery selects `.cbz` and `.cbr` filenames.
+`--output` names a directory. Use `--overwrite` to explicitly replace an existing PDF after verification. Reports and file logs require unused filenames.
 
-Profiles:
+### Quality profiles
 
-| Profile | Resolution | Encoding |
+| Profile | Resolution | Encoding policy |
 |---|---|---|
-| `lossless` (default) | Original unless resizing explicitly requested | Direct JPEG/compatible PNG streams; otherwise lossless PDF encoding |
-| `balanced` | Original unless resizing explicitly requested | JPEG quality 90 for opaque images; alpha preserved losslessly |
-| `small` | Fit within 1600×1600 unless overridden | JPEG quality 75 for opaque images; alpha preserved with the requested size |
+| `lossless` **(default)** | Original, unless resizing is requested | Preserve compatible JPEG/PNG streams; otherwise use lossless PDF encoding |
+| `balanced` | Original, unless resizing is requested | JPEG quality 90 for opaque pages; preserve alpha losslessly |
+| `small` | Fit within 1600 × 1600, unless overridden | JPEG quality 75 for opaque pages; retain alpha with the requested size |
 
-Explicit resizing changes pixels, including when combined with the `lossless` encoding profile. Lossy profiles can increase some files' sizes. Every normalization, resize, and JPEG encoding appears in the JSON conversion report. Transparency is preserved unless `--flatten-alpha` is selected; `--background FFFFFF` sets the flattening color.
+Resizing changes pixels even with the `lossless` encoding profile. Lossy encoding does not guarantee a smaller file. Every transformation is recorded when you request a JSON report.
 
-JPEG, PNG, WebP, BMP, GIF, and TIFF are supported. Every animation frame or TIFF page becomes a PDF page, in frame order. `--frames reject` refuses multiframe input instead. Animation timing does not carry over to PDF. Visible image members are naturally sorted by directory components and numeric runs. Hidden paths, AppleDouble files, and `__MACOSX` are ignored.
+Transparency is preserved by default. Use `--flatten-alpha --background FFFFFF` to flatten onto white. Animated images and multipage TIFFs become one PDF page per frame/page; `--frames reject` refuses multiframe inputs. Animation timing does not carry over to PDF.
 
-## File safety
+Run `cb2pdf convert --help` for every option, or see the [configuration guide](docs/configuration.md).
 
-Conversion writes an exclusive temporary on the destination filesystem, fsyncs it, parses the finalized PDF, checks page completeness and image resources, then commits it. Direct JPEG and compatible PNG streams are also checked against per-page SHA-256 digests, detecting changed streams or page reordering. Other formats receive structural verification and have pixel-fidelity integration coverage.
+## RAR setup
 
-No-overwrite publication uses an exclusive hard link; unsupported filesystems fail safely. Explicit overwrites use atomic replacement after verification. Originals move only after successful PDF commit. Archival copies are committed exclusively and synced before removal of the source name. Copy or removal failures retain the PDF and report an incomplete archival outcome. Cross-filesystem archival was verified locally using a generated archive on distinct `/tmp` and project filesystems; Windows behavior remains unverified.
-
-Catchable failures clean only temporaries owned by that conversion. A killed process can leave `.cb2pdf-*.cb2pdf-part` files; investigate those individually. Atomic publication is not a transaction spanning PDF and source archival, and Windows lacks a portable directory-fsync operation.
-
-## Legacy workflow
-
-Running `python cb2pdf.py` without arguments scans the launcher's directory and moves successfully converted originals to its `old` folder. Install the package before copying the launcher elsewhere. The original single-file-only installation is superseded by this package. Explicit CLI arguments work through the launcher too. Importing the application no longer starts conversions or creates folders.
-
-## Development and further details
+CBZ conversion needs no external archive tool. CBR conversion needs the optional Python dependency **and** a compatible decoder on PATH:
 
 ```sh
-python -m pip install -e '.[rar,dev,benchmark]'
-python -m unittest discover -v
-python -m mypy
-python -m pyflakes src tests tools benchmarks/compare.py benchmarks/real_world.py benchmarks/performance.py cb2pdf.py
-python -m pycodestyle --max-line-length=100 src tests tools benchmarks/compare.py benchmarks/real_world.py benchmarks/performance.py cb2pdf.py
-python -m autopep8 --recursive --diff --exit-code --max-line-length=100 src tests tools
-python -m build
-python benchmarks/compare.py --trials 3 --workers 1 2 4
+python -m pip install '.[rar]'
 ```
 
-The 119-test unittest suite uses real archives/PDFs and injected filesystem failures. Poppler's optional `pdftoppm` enables additional rendering checks. RAR tests skip when the optional library or backend is unavailable.
+| Platform | Decoder setup |
+|---|---|
+| Arch Linux | `sudo pacman -S unrar` |
+| Debian / Ubuntu | `sudo apt install unar` |
+| macOS with Homebrew | `brew install unar` |
+| Windows | Install [7-Zip](https://www.7-zip.org/) and add the directory containing `7z.exe` to PATH |
 
-See [configuration](docs/configuration.md), [architecture](docs/architecture.md), [troubleshooting and limitations](docs/troubleshooting.md), [performance methodology](docs/performance.md), [initial assessment](docs/assessment.md), and [changelog](CHANGELOG.md). Measured comparisons are in [benchmarks/reports](benchmarks/reports/).
+UnRAR, unar, full 7-Zip and bsdtar have different capabilities. Some distribution 7-Zip builds omit RAR codecs; bsdtar cannot decode solid RAR4. Missing capabilities produce actionable errors. Encrypted, split/multivolume and self-extracting archives are unsupported. See [backend troubleshooting](docs/troubleshooting.md).
 
-MIT licensed; the original copyright is preserved. Historical fork snapshots carry their own notices in [benchmarks/reference](benchmarks/reference/).
+## Your files come first
 
-## Performance follow-up
+Conversion writes a temporary PDF on the destination filesystem, verifies its structure and page completeness, and commits it only after success. Direct JPEG/PNG streams also receive SHA-256 checks to detect changed content or reordered pages. A required page failure prevents a partial PDF from being published.
 
-The optimized pipeline retains fsync, strict independent PDF parsing, direct-image stream SHA-256 checks and lossless defaults. It removes avoidable PNG pixel reconstruction, validates opaque PNG DEFLATE/scanline structure in bounded buffers, reads ZIP members without intermediate growth buffers, overlaps large hashes with I/O, and releases the writer's cyclic image graph before verification. One active archive can use one additional hashing thread, with two outstanding payloads at most; small hashes run synchronously.
+Originals are kept by default. With `--move-original`, archival starts after PDF commit; archival failures retain the PDF and report the partial outcome. Exclusive publication requires filesystem hard-link support. Other filesystem, interruption and color/metadata limitations are documented in [troubleshooting](docs/troubleshooting.md).
 
-In five-trial fresh-process tests, the optimized version beat the reference fork's median conversion time in all five workloads where both produced complete pixel-identical output (1.19×–1.99×). This is a measured workload-specific result, not a universal speed claim. The mixed-format fork output remains incomplete/lossy and is excluded from equivalent-output rankings. See [performance report](benchmarks/reports/performance-summary.md) and [methodology](docs/performance.md#performance-follow-up).
+## Performance, measured
+
+The retained five-trial comparison measured **1.19×–1.99× faster medians** than the reference fork across five synthetic workloads where both produced complete, pixel-identical output. Large-JPEG peak memory fell from **417.4 to 268.5 MiB** against the pre-optimization implementation.
+
+These are workload-specific historical measurements, not universal speed or memory guarantees. [Read the results](benchmarks/reports/performance-summary.md) and [reproduce the benchmarks](docs/performance.md).
+
+## Documentation
+
+| Guide | Contents |
+|---|---|
+| [Configuration](docs/configuration.md) | Flags, quality settings, resource limits and exit codes |
+| [Troubleshooting](docs/troubleshooting.md) | RAR dependencies, unsupported inputs and recovery |
+| [Architecture](docs/architecture.md) | Pipeline responsibilities and safety contracts |
+| [Development](docs/development.md) | Tests, typing, formatting and package builds |
+| [Performance](docs/performance.md) | Workloads, measurement policy and reproduction |
+| [Release validation](docs/releasing.md) | Installed-artifact checks and platform evidence |
+| [Changelog](CHANGELOG.md) | Version history and migration notes |
+
+### Coming from the original script?
+
+The installable CLI is the recommended workflow. The compatibility launcher remains: `python cb2pdf.py` without arguments scans its own directory and moves successfully converted archives into `old`. Install the package before copying the launcher elsewhere. Explicit CLI arguments also work through the launcher.
+
+MIT licensed. Original copyright and the historical reference implementations' notices are preserved; see [LICENSE](LICENSE) and [benchmark references](benchmarks/reference/).
