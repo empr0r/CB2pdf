@@ -23,7 +23,7 @@ def _metadata(image: Image.Image, frames: int, config: ConversionConfig) -> Imag
             f"image {image.width}x{image.height} exceeds {config.limits.max_pixels} pixels"
         )
     if image.format == "PNG":
-        # Complete chunk metadata was collected without inflating IDAT. Bypass
+        # Complete chunk metadata was collected without reconstructing pixels. Bypass
         # PngImageFile.getexif(), whose implementation forces raster decoding.
         exif = Image.Image.getexif(image)
     else:

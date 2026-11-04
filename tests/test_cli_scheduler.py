@@ -55,10 +55,13 @@ class SchedulerTests(ArchiveTestCase):
             discover_jobs([first, second], None)
 
     def test_casefold_output_collision(self):
-        first = self.archive(name="Comic.cbz")
-        second = self.archive(name="comic.cbz")
+        # Distinct source directories also exist on case-insensitive filesystems.
+        (self.root / "a").mkdir()
+        (self.root / "b").mkdir()
+        first = self.archive(name="a/Comic.cbz")
+        second = self.archive(name="b/comic.cbz")
         with self.assertRaises(OutputCollisionError):
-            discover_jobs([first, second], None)
+            discover_jobs([first, second], self.root / "output")
 
     def test_fail_fast_reports_unstarted_archives(self):
         first = self.archive({"1.png": b"bad"}, name="a.cbz")

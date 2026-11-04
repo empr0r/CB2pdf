@@ -1,10 +1,12 @@
 # CB2pdf
 
+**2.0.0rc1 — release candidate, not yet published.** Linux release validation passes on Python 3.11–3.14; Windows/macOS CI results are pending. See the [release checklist](docs/releasing.md).
+
 Convert CBZ/ZIP and CBR/RAR comic archives into complete, verified PDFs. The default preserves resolution, avoids lossy image recompression, and keeps original archives. Existing outputs are protected unless `--overwrite` is explicitly supplied.
 
 ## Installation
 
-Python 3.11 or newer is required. Python 3.14 on Linux has been tested locally; Windows, macOS, and Python 3.11–3.14 are covered by the configured CI matrix, which has not yet run remotely.
+Python 3.11 or newer is required. Fresh installed-wheel tests pass locally on Linux with Python 3.11–3.14, latest dependencies, and the minimum runtime dependencies on Python 3.11. Sixteen CI configurations cover those runtimes plus dependency-floor checks on Linux, Windows and macOS; remote results are pending.
 
 ```sh
 python -m venv .venv
@@ -17,7 +19,7 @@ python -m pip install .
 python -m pip install '.[rar]'
 ```
 
-RAR also requires a compatible executable on PATH: `unrar`, `unar`, `7z`, or `bsdtar`. On Arch Linux, install `unrar` with `sudo pacman -S unrar`. On Debian/Ubuntu, `sudo apt install libarchive-tools` provides bsdtar. On macOS, try the system bsdtar or install unar. On Windows, add the folder containing UnRAR.exe or 7z.exe to PATH. Backend capabilities vary, especially for solid and newer RAR variants.
+RAR also requires a compatible executable on PATH: `unrar`, `unar`, `7z`, or `bsdtar`. On Arch Linux, install `unrar` with `sudo pacman -S unrar`. On Debian/Ubuntu, `sudo apt install libarchive-tools` provides bsdtar. On macOS, try the system bsdtar or install unar. On Windows, add the folder containing UnRAR.exe or 7z.exe to PATH. UnRAR and 7-Zip pass the included compressed/solid RAR4/RAR5 fixtures on Linux. Bsdtar passes ordinary RAR4 and ordinary/solid RAR5; solid RAR4 requires another decoder and produces an actionable error.
 
 The runtime uses Pillow, img2pdf, and pypdf. The img2pdf distribution also depends on pikepdf; CB2pdf intentionally selects img2pdf's internal writer for consistent behavior across environments. No external PDF renderer is needed for conversion.
 
@@ -72,14 +74,14 @@ Running `python cb2pdf.py` without arguments scans the launcher's directory and 
 python -m pip install -e '.[rar,dev,benchmark]'
 python -m unittest discover -v
 python -m mypy
-python -m pyflakes src tests benchmarks/compare.py benchmarks/real_world.py benchmarks/performance.py cb2pdf.py
-python -m pycodestyle --max-line-length=100 src tests benchmarks/compare.py benchmarks/real_world.py benchmarks/performance.py cb2pdf.py
-python -m autopep8 --recursive --diff --exit-code --max-line-length=100 src tests
+python -m pyflakes src tests tools benchmarks/compare.py benchmarks/real_world.py benchmarks/performance.py cb2pdf.py
+python -m pycodestyle --max-line-length=100 src tests tools benchmarks/compare.py benchmarks/real_world.py benchmarks/performance.py cb2pdf.py
+python -m autopep8 --recursive --diff --exit-code --max-line-length=100 src tests tools
 python -m build
 python benchmarks/compare.py --trials 3 --workers 1 2 4
 ```
 
-The 107-test unittest suite uses real archives/PDFs and injected filesystem failures. Poppler's optional `pdftoppm` enables additional rendering checks. RAR tests skip when the optional library or backend is unavailable.
+The 116-test unittest suite uses real archives/PDFs and injected filesystem failures. Poppler's optional `pdftoppm` enables additional rendering checks. RAR tests skip when the optional library or backend is unavailable.
 
 See [configuration](docs/configuration.md), [architecture](docs/architecture.md), [troubleshooting and limitations](docs/troubleshooting.md), [performance methodology](docs/performance.md), [initial assessment](docs/assessment.md), and [changelog](CHANGELOG.md). Measured comparisons are in [benchmarks/reports](benchmarks/reports/).
 

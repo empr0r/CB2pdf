@@ -75,3 +75,5 @@ Optimizations retain preservation and output safeguards:
 - Plugins inheriting Pillow's no-op base verifier reuse the open image. Dedicated plugin verifiers still receive a fresh read, and fault-injection coverage prevents skipping them.
 
 The fork is eligible for equal-quality ranking only when it produces the expected page count and exact ordered pixels. Mixed-format omission/recompression and automatic high-resolution resizing remain visible in the tables. A raw time advantage for an incomplete/lossy result is not an equivalent-output win. Results apply to this shared Linux host and source-loaded internal img2pdf engine; pikepdf, other platforms, cold caches and compressed CBR performance remain unmeasured.
+
+Release-candidate validation is recorded separately in [releasing.md](releasing.md). The performance follow-up measured commit `fd1dc7f` with the dependencies recorded in its JSON; it predates the CBR backend correction and fresh package-index dependency validation. It remains historical performance evidence, not a new timing claim for every subsequent dependency combination.

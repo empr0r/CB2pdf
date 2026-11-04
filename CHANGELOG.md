@@ -1,6 +1,13 @@
 # Changelog
 
-## Unreleased — Performance follow-up
+## 2.0.0rc1 — Release candidate (unpublished)
+
+- Validated fresh installed wheels on Linux/Python 3.11–3.14 and the minimum supported runtime dependencies on Python 3.11.
+- Added actual compressed/solid RAR4/RAR5 fixtures and native decoder coverage. Corrected bsdtar argument ordering without global patches; unsupported solid RAR4 reports the required alternative decoder.
+- Added installed-wheel provenance checks, isolated test staging, CLI smoke tests, JSON evidence and a 16-configuration CI matrix testing shared build artifacts.
+- Corrected the output-collision test to use distinct input directories on case-insensitive filesystems. The suite now contains 116 tests.
+
+### Performance follow-up
 
 - Added PNG chunk inspection that avoids pixel reconstruction while retaining CRC, DEFLATE checksum, scanline extent/filter and text-decompression validation. Late EXIF/XMP compatibility remains supported; invalid late color/transparency/DPI chunks fail explicitly.
 - Reused validated per-page rotations through the owned img2pdf document, with independent output rotation checks. Single-frame APNGs normalize through Pillow rather than being mistaken for ordinary PNGs.
@@ -8,7 +15,7 @@
 - Released img2pdf page-tree cycles after writing, including failures, before independent verification. Small PDFs can use mapped read-only parsing with a portable file-read fallback.
 - Expanded the suite from 81 to 107 tests. Added randomized comparisons against a frozen pre-optimization package and the reference fork, plus private-fixture support. No validation/durability switches or lossy defaults were introduced.
 
-## 2.0.0 — Engineering overhaul
+### Engineering overhaul
 
 - Introduced a typed, installable Python package and argparse conversion, inspection and benchmark commands.
 - Protected existing PDFs by default; added verified atomic publication, direct-stream/page-order digests, safe source archival and truthful partial-outcome reporting.

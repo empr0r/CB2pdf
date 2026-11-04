@@ -1,28 +1,119 @@
-name: validation
-on: [push, pull_request]
+name: release validation
+on: [push, pull_request, workflow_dispatch]
+
+permissions:
+  contents: read
+
+env:
+  PYTHONUTF8: '1'
+
+defaults:
+  run:
+    shell: bash
+
 jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.14'
+      - run: python -m pip install build twine
+      - run: python -m build
+      - run: python -m twine check --strict dist/*
+      - uses: actions/upload-artifact@v4
+        with:
+          name: distributions
+          path: dist/*
+          if-no-files-found: error
+
   test:
+    needs: build
     strategy:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
         python: ['3.11', '3.12', '3.13', '3.14']
+        dependencies: [latest]
+        include:
+          - os: ubuntu-latest
+            python: '3.11'
+            dependencies: minimum
+          - os: windows-latest
+            python: '3.11'
+            dependencies: minimum
+          - os: macos-latest
+            python: '3.11'
+            dependencies: minimum
+          - os: ubuntu-latest
+            python: '3.14'
+            dependencies: basic
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python }}
-      - name: Install optional renderer and RAR backend
+      - uses: actions/download-artifact@v4
+        with:
+          name: distributions
+          path: dist
+      - name: Install Linux decoders and renderer
         if: runner.os == 'Linux'
-        run: sudo apt-get update && sudo apt-get install -y libarchive-tools poppler-utils
-      - run: python -m pip install -e '.[rar,dev,benchmark]'
-      - run: python -m unittest discover -v
+        run: sudo apt-get update && sudo apt-get install -y unrar libarchive-tools poppler-utils
+      - name: Install macOS decoder and renderer
+        if: runner.os == 'macOS'
+        run: brew install unar poppler
+      - name: Configure Windows decoder
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          $sevenZip = Join-Path $env:ProgramFiles '7-Zip'
+          if (!(Test-Path "$sevenZip\7z.exe")) {
+            choco install 7zip --yes --no-progress
+            if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          }
+          $sevenZip | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
+      - name: Install candidate wheel and tools
+        if: matrix.dependencies != 'basic'
+        run: |
+          wheels=(dist/*.whl)
+          python -m pip install "${wheels[0]}[rar,dev,benchmark]"
+      - name: Install basic runtime only
+        if: matrix.dependencies == 'basic'
+        run: |
+          wheels=(dist/*.whl)
+          python -m pip install "${wheels[0]}"
+      - name: Install supported dependency floor
+        if: matrix.dependencies == 'minimum'
+        run: python -m pip install Pillow==10.4.0 img2pdf==0.6.3 pypdf==6.12.0 rarfile==4.2
+      - run: python -m pip check
+      - name: Test installed artifact outside checkout
+        run: |
+          options=()
+          if [ '${{ matrix.dependencies }}' != 'basic' ]; then
+            options+=(--require-rar)
+          fi
+          python tools/validate_release.py --artifact dist/*.whl --report validation/result.json "${options[@]}"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: validation-${{ matrix.os }}-${{ matrix.python }}-${{ matrix.dependencies }}
+          path: validation/*
+          if-no-files-found: warn
+
+  quality:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: python -m pip install '.[dev,rar,benchmark]'
       - run: python -m mypy
-      - run: python -m pyflakes src tests benchmarks/compare.py benchmarks/real_world.py benchmarks/performance.py cb2pdf.py
-      - run: python -m pycodestyle --max-line-length=100 src tests benchmarks/compare.py benchmarks/real_world.py benchmarks/performance.py cb2pdf.py
-      - run: python -m autopep8 --recursive --diff --exit-code --max-line-length=100 src tests
+      - run: python -m pyflakes src tests tools benchmarks/compare.py benchmarks/real_world.py benchmarks/performance.py cb2pdf.py
+      - run: python -m pycodestyle --max-line-length=100 src tests tools benchmarks/compare.py benchmarks/real_world.py benchmarks/performance.py cb2pdf.py
+      - run: python -m autopep8 --recursive --diff --exit-code --max-line-length=100 src tests tools
       - run: python -m autopep8 --diff --exit-code --max-line-length=100 benchmarks/compare.py benchmarks/real_world.py benchmarks/performance.py cb2pdf.py
-      - run: python -m build
-      - run: cb2pdf --version
-      - run: cb2pdf benchmark --quick --trials 1 --output benchmark-smoke.json

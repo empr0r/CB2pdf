@@ -23,6 +23,7 @@ from .errors import (
 )
 from .models import ArchiveMember
 from .ordering import natural_key, normalized_name
+from .rar_backend import open_rar_member, validate_rar_backend
 
 IMAGE_EXTENSIONS = {".jpg", ".jpeg", ".png", ".webp", ".bmp", ".gif", ".tif", ".tiff"}
 _RAR_LOCK = threading.Lock()
@@ -127,6 +128,7 @@ class ArchiveReader:
         self.actual_bytes = 0
         self._rar_headers = 0
         self._rar_metadata_bytes = 0
+        self._rar_backend: Any = None
 
     def __enter__(self) -> "ArchiveReader":
         try:
@@ -140,7 +142,7 @@ class ArchiveReader:
                     raise MissingDependencyError("CBR requires: pip install 'cb2pdf[rar]'") from exc
                 with _RAR_LOCK:
                     try:
-                        rarfile.tool_setup()
+                        self._rar_backend = rarfile.tool_setup()
                     except rarfile.RarCannotExec as exc:
                         raise MissingDependencyError(
                             "RAR decoding requires unrar, unar, 7z, or bsdtar on PATH; "
@@ -155,6 +157,8 @@ class ArchiveReader:
                 if len(self.handle.volumelist()) > 1:
                     raise ArchiveFormatError("multi-volume RAR archives are unsupported")
             self._enumerate()
+            if self.format == "rar":
+                validate_rar_backend(self.handle, self._rar_backend)
             return self
         except BaseException as exc:
             self.close()
@@ -232,7 +236,12 @@ class ArchiveReader:
     @contextmanager
     def open(self, member: ArchiveMember) -> Iterator[BinaryIO]:
         try:
-            with self.handle.open(self.infos[member.index]) as stream:
+            info = self.infos[member.index]
+            if self.format == "zip":
+                opened = self.handle.open(info)
+            else:
+                opened = open_rar_member(self.handle, info, self.path, self._rar_backend)
+            with opened as stream:
                 yield stream
         except (ConversionError, OSError):
             raise

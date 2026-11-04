@@ -9,3 +9,4 @@ build/
 .coverage
 benchmarks/work/
 *.cb2pdf-part
+validation/**/*.log
