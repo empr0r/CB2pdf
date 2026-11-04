@@ -68,6 +68,17 @@ def probe(artifact: Path, report: Path, require_rar: bool) -> int:
             dependencies[name] = importlib.metadata.version(name)
         except importlib.metadata.PackageNotFoundError:
             dependencies[name] = None
+    sevenzip = shutil.which("7z")
+    codec_profile = None
+    if sevenzip is not None:
+        from cb2pdf.rar_backend import parse_sevenzip_decoders
+
+        information = subprocess.run([sevenzip, "i"], capture_output=True,
+                                     encoding="utf-8", errors="replace", timeout=10)
+        codec_profile = {
+            "returncode": information.returncode,
+            "rar_decoders": sorted(parse_sevenzip_decoders(information.stdout)),
+        }
     record = {
         "schema_version": 1, "success": success, "python": sys.version,
         "platform": platform.platform(), "installed_package": str(package),
@@ -79,6 +90,7 @@ def probe(artifact: Path, report: Path, require_rar: bool) -> int:
         "errors": [case.id() for case, _ in result.errors],
         "skipped": [{"test": case.id(), "reason": reason} for case, reason in result.skipped],
         "backends": {name: shutil.which(name) for name in ("unrar", "unar", "bsdtar", "7z")},
+        "sevenzip_codec_profile": codec_profile,
         "cli": cli, "smoke": metrics,
     }
     with report.open("x") as stream:
@@ -127,6 +139,10 @@ def main() -> int:
                            "error": "probe failed before writing metrics; see adjacent log"},
                           stream)
         print(f"{'PASS' if completed.returncode == 0 else 'FAIL'}: {destination}")
+        if completed.returncode:
+            # Keep full artifacts and enough context in the job console that a
+            # developer can diagnose ordinary failures without downloading a ZIP.
+            print((completed.stdout + completed.stderr)[-8000:])
         return completed.returncode
 
 

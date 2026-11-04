@@ -1,0 +1,151 @@
+{
+  "schema_version": 1,
+  "success": true,
+  "python": "3.14.9 (main, Oct 21 2026, 14:50:29) [GCC 13.3.0]",
+  "platform": "Linux-7.0.0-1017-azure-x86_64-with-glibc2.39",
+  "installed_package": "/opt/hostedtoolcache/Python/3.14.9/x64/lib/python3.14/site-packages/cb2pdf",
+  "artifact": "cb2pdf-2.0.0rc1-py3-none-any.whl",
+  "artifact_sha256": "ba3624448aec85c57e2a1fc68d46bf6018628849a751a00d2c02511ec9825584",
+  "verified_wheel_entries": 19,
+  "dependencies": {
+    "cb2pdf": "2.0.0rc1",
+    "Pillow": "13.0.0",
+    "img2pdf": "0.6.3",
+    "pypdf": "6.21.4",
+    "pikepdf": "10.17.0",
+    "rarfile": null
+  },
+  "tests_run": 116,
+  "failures": [],
+  "errors": [],
+  "skipped": [
+    {
+      "test": "tests.test_rar.RarTests.test_missing_optional_rar_library",
+      "reason": "optional rarfile dependency unavailable"
+    },
+    {
+      "test": "tests.test_rar.RarTests.test_missing_rar_backend_actionable",
+      "reason": "optional rarfile dependency unavailable"
+    },
+    {
+      "test": "tests.test_rar.RarTests.test_rar_byte_limit",
+      "reason": "optional rarfile dependency unavailable"
+    },
+    {
+      "test": "tests.test_rar.RarTests.test_rar_traversal_refused",
+      "reason": "optional rarfile dependency unavailable"
+    },
+    {
+      "test": "tests.test_rar.RarTests.test_real_stored_rar_conversion",
+      "reason": "optional rarfile dependency unavailable"
+    },
+    {
+      "test": "tests.test_rar_compressed.CompressedRarTests.test_bsdtar_supported_variants_and_solid_rar4_error",
+      "reason": "optional rarfile dependency unavailable"
+    },
+    {
+      "test": "tests.test_rar_compressed.CompressedRarTests.test_compressed_member_limit_preserves_source",
+      "reason": "optional rarfile dependency unavailable"
+    },
+    {
+      "test": "tests.test_rar_compressed.CompressedRarTests.test_corrupt_compressed_stream_preserves_source",
+      "reason": "optional rarfile dependency unavailable"
+    },
+    {
+      "test": "tests.test_rar_compressed.CompressedRarTests.test_default_backend_round_trip",
+      "reason": "optional rarfile dependency unavailable"
+    },
+    {
+      "test": "tests.test_rar_compressed.CompressedRarTests.test_fixture_integrity_and_actual_compression",
+      "reason": "optional rarfile dependency unavailable"
+    },
+    {
+      "test": "tests.test_rar_compressed.CompressedRarTests.test_literal_bsdtar_member_selectors",
+      "reason": "optional rarfile dependency unavailable"
+    },
+    {
+      "test": "tests.test_rar_compressed.CompressedRarTests.test_sevenzip_round_trip",
+      "reason": "optional rarfile dependency unavailable"
+    },
+    {
+      "test": "tests.test_rar_compressed.CompressedRarTests.test_unar_round_trip",
+      "reason": "optional rarfile dependency unavailable"
+    },
+    {
+      "test": "tests.test_rar_compressed.CompressedRarTests.test_unrar_round_trip",
+      "reason": "optional rarfile dependency unavailable"
+    }
+  ],
+  "backends": {
+    "unrar": "/usr/bin/unrar",
+    "unar": null,
+    "bsdtar": "/usr/bin/bsdtar",
+    "7z": "/usr/bin/7z"
+  },
+  "cli": [
+    {
+      "arguments": [
+        "cb2pdf",
+        "--version"
+      ],
+      "returncode": 0,
+      "stdout": "cb2pdf 2.0.0rc1\n",
+      "stderr": ""
+    },
+    {
+      "arguments": [
+        "cb2pdf",
+        "benchmark",
+        "--quick",
+        "--trials",
+        "1",
+        "--output",
+        "installed-smoke.json"
+      ],
+      "returncode": 0,
+      "stdout": "Benchmark results: installed-smoke.json\n",
+      "stderr": ""
+    }
+  ],
+  "smoke": {
+    "schema_version": 1,
+    "environment": {
+      "platform": "Linux-7.0.0-1017-azure-x86_64-with-glibc2.39",
+      "machine": "x86_64",
+      "processor": "x86_64",
+      "logical_cpus": 4,
+      "python": "3.14.9 (main, Oct 21 2026, 14:50:29) [GCC 13.3.0]",
+      "cb2pdf": "2.0.0rc1",
+      "pillow": "13.0.0",
+      "img2pdf": "0.6.3",
+      "pypdf": "6.21.4",
+      "cpu_model": "AMD EPYC 9V74 80-Core Processor",
+      "memory_total_bytes": 16760344576,
+      "source_sha256": "808c7815c7f016aa0a1b0c7e7be456f9271a0e73fa54deb39c36493cc208847c",
+      "memory_note": "Linux: /proc/self/status VmHWM after conversion, since exec, including imports. Other POSIX: getrusage ru_maxrss (may include inherited high-water mark). Resource metrics unavailable on Windows."
+    },
+    "workers": 1,
+    "quick": true,
+    "trials": [
+      {
+        "process_wall_seconds": 0.24679465999999906,
+        "peak_temporary_bytes_sampled": 0,
+        "returncode": 0,
+        "stderr": "",
+        "conversion_wall_seconds": 0.01784604200000217,
+        "peak_rss_bytes": 48713728,
+        "cpu_seconds": 0.018856999999999957,
+        "cpu_percent": 105.6648863652661,
+        "conversion_errors": 0,
+        "expected_pages": 6,
+        "actual_pages": 6,
+        "exact_pixel_pages_in_correct_order": 6,
+        "jpeg_pages": 6,
+        "exact_jpeg_streams": 6,
+        "validation_errors": 0,
+        "output_bytes": 2233537,
+        "trial": 1
+      }
+    ]
+  }
+}

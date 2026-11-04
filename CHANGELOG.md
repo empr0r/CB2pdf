@@ -1,5 +1,12 @@
 # Changelog
 
+## 2.0.0rc2 — CI decoder compatibility (unpublished)
+
+- Added per-archive inspection of enabled 7-Zip RAR codecs. Distribution builds missing a required method now report a dependency error rather than a misleading corruption failure. Queries have a finite timeout.
+- Backend tests compare capability declarations with real native extraction of valid RAR4/RAR5 fixtures. Available methods still require exact output; unavailable methods must preserve the source and fail clearly. Added three parser regressions (119 tests total).
+- CI result JSON records 7-Zip codec profiles, failure excerpts appear in console logs, and artifact uploads include only the current job report/log.
+- Initial rc1 CI: build/quality, five Windows configurations and Linux basic passed. Ten Linux/macOS configurations exposed stripped 7-Zip codecs; rc2 requires another platform run before release.
+
 ## 2.0.0rc1 — Release candidate (unpublished)
 
 - Validated fresh installed wheels on Linux/Python 3.11–3.14 and the minimum supported runtime dependencies on Python 3.11.

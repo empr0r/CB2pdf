@@ -1,6 +1,6 @@
 # CB2pdf
 
-**2.0.0rc1 — release candidate, not yet published.** Linux release validation passes on Python 3.11–3.14; Windows/macOS CI results are pending. See the [release checklist](docs/releasing.md).
+**2.0.0rc2 — release candidate, not yet published.** The first platform CI run exposed missing RAR codecs in distribution 7-Zip builds. The correction is prepared; the next CI run remains a release gate. See the [release checklist](docs/releasing.md).
 
 Convert CBZ/ZIP and CBR/RAR comic archives into complete, verified PDFs. The default preserves resolution, avoids lossy image recompression, and keeps original archives. Existing outputs are protected unless `--overwrite` is explicitly supplied.
 
@@ -81,7 +81,7 @@ python -m build
 python benchmarks/compare.py --trials 3 --workers 1 2 4
 ```
 
-The 116-test unittest suite uses real archives/PDFs and injected filesystem failures. Poppler's optional `pdftoppm` enables additional rendering checks. RAR tests skip when the optional library or backend is unavailable.
+The 119-test unittest suite uses real archives/PDFs and injected filesystem failures. Poppler's optional `pdftoppm` enables additional rendering checks. RAR tests skip when the optional library or backend is unavailable.
 
 See [configuration](docs/configuration.md), [architecture](docs/architecture.md), [troubleshooting and limitations](docs/troubleshooting.md), [performance methodology](docs/performance.md), [initial assessment](docs/assessment.md), and [changelog](CHANGELOG.md). Measured comparisons are in [benchmarks/reports](benchmarks/reports/).
 

@@ -1,6 +1,6 @@
-# Release validation: 2.0.0rc1
+# Release validation: 2.0.0rc2
 
-This candidate is prepared locally and has not been published. A stable release
+The rc1 branch was pushed and its platform CI ran. Candidate rc2 addresses the codec capability failures found there. No package release has been published. A stable release
 remains gated on successful Windows/macOS runs and review of the CI results.
 The feature set is frozen; the release pass changes conversion behavior only
 where real regression fixtures demonstrated a defect.
@@ -11,12 +11,12 @@ The same installed wheel is tested outside the checkout in six environments:
 
 | Linux interpreter | Runtime dependencies | Suite |
 |---|---|---|
-| CPython 3.11.18 | Latest compatible | 116 tests |
-| CPython 3.12.16 | Latest compatible | 116 tests |
-| CPython 3.13.18 | Latest compatible | 116 tests |
-| CPython 3.14.9 | Latest compatible | 116 tests |
-| CPython 3.11.18 | Declared runtime floor | 116 tests |
-| CPython 3.14.9 | Basic runtime only (no extras) | 116 tests; RAR tests skipped |
+| CPython 3.11.18 | Latest compatible | 119 tests |
+| CPython 3.12.16 | Latest compatible | 119 tests |
+| CPython 3.13.18 | Latest compatible | 119 tests |
+| CPython 3.14.9 | Latest compatible | 119 tests |
+| CPython 3.11.18 | Declared runtime floor | 119 tests |
+| CPython 3.14.9 | Basic runtime only (no extras) | 119 tests; RAR tests skipped |
 
 Latest resolved versions: Pillow 13.0.0, img2pdf 0.6.3, pypdf 6.21.4,
 pikepdf 10.17.0 and rarfile 4.5. The explicit floor is Pillow 10.4.0,
@@ -64,18 +64,18 @@ Build with ordinary isolated packaging:
 
 ```sh
 python -m pip install build twine
-python -m build --outdir dist/2.0.0rc1
-python -m twine check --strict dist/2.0.0rc1/*
+python -m build --outdir dist/2.0.0rc2
+python -m twine check --strict dist/2.0.0rc2/*
 ```
 
 In a fresh virtual environment of the desired Python version:
 
 ```sh
-python -m pip install './dist/2.0.0rc1/cb2pdf-2.0.0rc1-py3-none-any.whl[rar,dev,benchmark]'
+python -m pip install './dist/2.0.0rc2/cb2pdf-2.0.0rc2-py3-none-any.whl[rar,dev,benchmark]'
 # Optional: reproduce the supported runtime floor, on Python 3.11
 python -m pip install Pillow==10.4.0 img2pdf==0.6.3 pypdf==6.12.0 rarfile==4.2
 python -m pip check
-python tools/validate_release.py --artifact dist/2.0.0rc1/cb2pdf-2.0.0rc1-py3-none-any.whl --report validation/new-run.json --require-rar
+python tools/validate_release.py --artifact dist/2.0.0rc2/cb2pdf-2.0.0rc2-py3-none-any.whl --report validation/new-run.json --require-rar
 ```
 
 Install a compatible decoder separately and put it on PATH. The validation
@@ -116,3 +116,34 @@ authorization requires explicit approval before a push; that boundary remains.
 
 Hard native memory/time isolation, standalone executables and untested backend
 variants remain documented limitations rather than claims made by this release.
+
+## First remote CI run and rc2 correction
+
+[Run 41745898306](https://github.com/empr0r/CB2pdf/actions/runs/41745898306)
+validated rc1. Build/metadata and quality jobs passed, all five Windows cases
+passed, and the Linux basic-install case passed. The remaining ten jobs failed
+only in dedicated 7-Zip tests: installed distribution binaries omitted RAR
+decoders. Their other conversion, preservation and filesystem tests passed.
+This is a failed release gate, not a claim that all platforms are green.
+
+Candidate rc2 checks enabled methods in `7z i`'s Codecs section rather than
+assuming an installed executable or advertised RAR format can decode it. It
+checks compressed members' required Rar1/Rar2/Rar3/Rar5 method, uses a finite
+query timeout, and reports MissingDependencyError with installation guidance
+when a decoder is absent. Stored members need no compression codec.
+
+The backend tests independently invoke the native decoder against valid
+fixtures. Available codecs must produce the original bytes and exact PDF pixels;
+missing codecs must both fail native extraction with Unsupported Method and
+produce the application's explicit source-preserving dependency error. Pure
+parser tests ensure an archive format or encoder flag cannot masquerade as a
+decoder. CI records the codec profile, prints failure diagnostics in its console,
+and uploads only the current job's report/log.
+
+The Ubuntu package was independently downloaded into ignored test tooling,
+verified against its published SHA-256 and exercised without system installation.
+It reproduces a stripped-codec build. Full Arch 7-Zip continues to pass conversion
+for all four compressed/solid fixtures. No decoder failure is silently skipped.
+
+Distribution details: [Ubuntu 7zip/optional RAR plugin](https://packages.ubuntu.com/noble/7zip),
+[Homebrew build configuration](https://github.com/Homebrew/homebrew-core/blob/HEAD/Formula/s/sevenzip.rb).

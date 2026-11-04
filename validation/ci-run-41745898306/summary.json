@@ -1,0 +1,179 @@
+{
+  "run_id": 41745898306,
+  "commit": "7973060a0d85358075767f43c7490dc6c255f677",
+  "url": "https://github.com/empr0r/CB2pdf/actions/runs/41745898306",
+  "build": "success",
+  "quality": "success",
+  "test_jobs_passed": 6,
+  "test_jobs_failed": 10,
+  "results": [
+    {
+      "name": "validation-macos-latest-3.14-latest",
+      "success": false,
+      "tests": 116,
+      "errors": [
+        "tests.test_rar_compressed.CompressedRarTests.test_sevenzip_round_trip (backend='sevenzip', fixture='rar4-compressed.cbr')",
+        "tests.test_rar_compressed.CompressedRarTests.test_sevenzip_round_trip (backend='sevenzip', fixture='rar4-solid.cbr')",
+        "tests.test_rar_compressed.CompressedRarTests.test_sevenzip_round_trip (backend='sevenzip', fixture='rar5-compressed.cbr')",
+        "tests.test_rar_compressed.CompressedRarTests.test_sevenzip_round_trip (backend='sevenzip', fixture='rar5-solid.cbr')"
+      ],
+      "failures": [],
+      "skips": 1
+    },
+    {
+      "name": "validation-macos-latest-3.13-latest",
+      "success": false,
+      "tests": 116,
+      "errors": [
+        "tests.test_rar_compressed.CompressedRarTests.test_sevenzip_round_trip (backend='sevenzip', fixture='rar4-compressed.cbr')",
+        "tests.test_rar_compressed.CompressedRarTests.test_sevenzip_round_trip (backend='sevenzip', fixture='rar4-solid.cbr')",
+        "tests.test_rar_compressed.CompressedRarTests.test_sevenzip_round_trip (backend='sevenzip', fixture='rar5-compressed.cbr')",
+        "tests.test_rar_compressed.CompressedRarTests.test_sevenzip_round_trip (backend='sevenzip', fixture='rar5-solid.cbr')"
+      ],
+      "failures": [],
+      "skips": 1
+    },
+    {
+      "name": "validation-ubuntu-latest-3.14-latest",
+      "success": false,
+      "tests": 116,
+      "errors": [
+        "tests.test_rar_compressed.CompressedRarTests.test_sevenzip_round_trip (backend='sevenzip', fixture='rar4-compressed.cbr')",
+        "tests.test_rar_compressed.CompressedRarTests.test_sevenzip_round_trip (backend='sevenzip', fixture='rar4-solid.cbr')"
+      ],
+      "failures": [],
+      "skips": 1
+    },
+    {
+      "name": "validation-ubuntu-latest-3.12-latest",
+      "success": false,
+      "tests": 116,
+      "errors": [
+        "tests.test_rar_compressed.CompressedRarTests.test_sevenzip_round_trip (backend='sevenzip', fixture='rar4-compressed.cbr')",
+        "tests.test_rar_compressed.CompressedRarTests.test_sevenzip_round_trip (backend='sevenzip', fixture='rar4-solid.cbr')"
+      ],
+      "failures": [],
+      "skips": 1
+    },
+    {
+      "name": "validation-windows-latest-3.13-latest",
+      "success": true,
+      "tests": 116,
+      "errors": [],
+      "failures": [],
+      "skips": 5
+    },
+    {
+      "name": "validation-macos-latest-3.11-minimum",
+      "success": false,
+      "tests": 116,
+      "errors": [
+        "tests.test_rar_compressed.CompressedRarTests.test_sevenzip_round_trip (backend='sevenzip', fixture='rar4-compressed.cbr')",
+        "tests.test_rar_compressed.CompressedRarTests.test_sevenzip_round_trip (backend='sevenzip', fixture='rar4-solid.cbr')",
+        "tests.test_rar_compressed.CompressedRarTests.test_sevenzip_round_trip (backend='sevenzip', fixture='rar5-compressed.cbr')",
+        "tests.test_rar_compressed.CompressedRarTests.test_sevenzip_round_trip (backend='sevenzip', fixture='rar5-solid.cbr')"
+      ],
+      "failures": [],
+      "skips": 1
+    },
+    {
+      "name": "validation-ubuntu-latest-3.11-minimum",
+      "success": false,
+      "tests": 116,
+      "errors": [
+        "tests.test_rar_compressed.CompressedRarTests.test_sevenzip_round_trip (backend='sevenzip', fixture='rar4-compressed.cbr')",
+        "tests.test_rar_compressed.CompressedRarTests.test_sevenzip_round_trip (backend='sevenzip', fixture='rar4-solid.cbr')"
+      ],
+      "failures": [],
+      "skips": 1
+    },
+    {
+      "name": "validation-macos-latest-3.11-latest",
+      "success": false,
+      "tests": 116,
+      "errors": [
+        "tests.test_rar_compressed.CompressedRarTests.test_sevenzip_round_trip (backend='sevenzip', fixture='rar4-compressed.cbr')",
+        "tests.test_rar_compressed.CompressedRarTests.test_sevenzip_round_trip (backend='sevenzip', fixture='rar4-solid.cbr')",
+        "tests.test_rar_compressed.CompressedRarTests.test_sevenzip_round_trip (backend='sevenzip', fixture='rar5-compressed.cbr')",
+        "tests.test_rar_compressed.CompressedRarTests.test_sevenzip_round_trip (backend='sevenzip', fixture='rar5-solid.cbr')"
+      ],
+      "failures": [],
+      "skips": 1
+    },
+    {
+      "name": "validation-windows-latest-3.12-latest",
+      "success": true,
+      "tests": 116,
+      "errors": [],
+      "failures": [],
+      "skips": 5
+    },
+    {
+      "name": "validation-macos-latest-3.12-latest",
+      "success": false,
+      "tests": 116,
+      "errors": [
+        "tests.test_rar_compressed.CompressedRarTests.test_sevenzip_round_trip (backend='sevenzip', fixture='rar4-compressed.cbr')",
+        "tests.test_rar_compressed.CompressedRarTests.test_sevenzip_round_trip (backend='sevenzip', fixture='rar4-solid.cbr')",
+        "tests.test_rar_compressed.CompressedRarTests.test_sevenzip_round_trip (backend='sevenzip', fixture='rar5-compressed.cbr')",
+        "tests.test_rar_compressed.CompressedRarTests.test_sevenzip_round_trip (backend='sevenzip', fixture='rar5-solid.cbr')"
+      ],
+      "failures": [],
+      "skips": 1
+    },
+    {
+      "name": "validation-ubuntu-latest-3.14-basic",
+      "success": true,
+      "tests": 116,
+      "errors": [],
+      "failures": [],
+      "skips": 14
+    },
+    {
+      "name": "validation-windows-latest-3.11-latest",
+      "success": true,
+      "tests": 116,
+      "errors": [],
+      "failures": [],
+      "skips": 5
+    },
+    {
+      "name": "validation-windows-latest-3.14-latest",
+      "success": true,
+      "tests": 116,
+      "errors": [],
+      "failures": [],
+      "skips": 5
+    },
+    {
+      "name": "validation-ubuntu-latest-3.11-latest",
+      "success": false,
+      "tests": 116,
+      "errors": [
+        "tests.test_rar_compressed.CompressedRarTests.test_sevenzip_round_trip (backend='sevenzip', fixture='rar4-compressed.cbr')",
+        "tests.test_rar_compressed.CompressedRarTests.test_sevenzip_round_trip (backend='sevenzip', fixture='rar4-solid.cbr')"
+      ],
+      "failures": [],
+      "skips": 1
+    },
+    {
+      "name": "validation-ubuntu-latest-3.13-latest",
+      "success": false,
+      "tests": 116,
+      "errors": [
+        "tests.test_rar_compressed.CompressedRarTests.test_sevenzip_round_trip (backend='sevenzip', fixture='rar4-compressed.cbr')",
+        "tests.test_rar_compressed.CompressedRarTests.test_sevenzip_round_trip (backend='sevenzip', fixture='rar4-solid.cbr')"
+      ],
+      "failures": [],
+      "skips": 1
+    },
+    {
+      "name": "validation-windows-latest-3.11-minimum",
+      "success": true,
+      "tests": 116,
+      "errors": [],
+      "failures": [],
+      "skips": 5
+    }
+  ]
+}

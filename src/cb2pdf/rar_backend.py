@@ -1,14 +1,50 @@
 """Scoped RAR backend integration; no process-global rarfile patches.
 
-rarfile 4.2 and 4.5 inserts ``--`` immediately after bsdtar's ``-f``. Bsdtar
+rarfile 4.2 and 4.5 insert ``--`` immediately after bsdtar's ``-f``. Bsdtar
 interprets that token as the archive filename. Use its proper argument order
 while retaining rarfile's bounded, seekable, checksum-checking pipe reader.
 """
 
 from pathlib import Path
+import subprocess
 from typing import Any, BinaryIO
 
 from .errors import MissingDependencyError
+
+
+def parse_sevenzip_decoders(information: str) -> frozenset[str]:
+    """Read enabled RAR methods, rather than merely advertised archive formats.
+
+    Distribution builds can list a RAR archive handler while omitting its RAR3
+    decoder. Homebrew can omit all RAR decoders. Only decoder flags in the
+    Codecs section establish that compressed members can actually be read.
+    """
+    codecs = False
+    methods = set()
+    for line in information.splitlines():
+        if line.strip().endswith(":"):
+            codecs = line.strip() == "Codecs:"
+            continue
+        fields = line.split()
+        if codecs and len(fields) >= 3 and fields[-1] in ("Rar1", "Rar2", "Rar3", "Rar5"):
+            if "D" in fields[-3]:
+                methods.add(fields[-1])
+    return frozenset(methods)
+
+
+def sevenzip_decoders(backend: Any) -> frozenset[str]:
+    """Inspect the selected executable once per archive, with a finite timeout."""
+    import rarfile
+
+    executable = getattr(rarfile, backend.setup["open_cmd"][0])
+    try:
+        result = subprocess.run([executable, "i"], capture_output=True, check=True,
+                                encoding="utf-8", errors="replace", timeout=10)
+    except (OSError, subprocess.SubprocessError) as exc:
+        raise MissingDependencyError(
+            "cannot inspect 7-Zip RAR decoders; install a working full 7-Zip, unrar, or unar"
+        ) from exc
+    return parse_sevenzip_decoders(result.stdout)
 
 
 def validate_rar_backend(archive: Any, backend: Any) -> None:
@@ -23,6 +59,26 @@ def validate_rar_backend(archive: Any, backend: Any) -> None:
         raise MissingDependencyError(
             "bsdtar cannot decode solid RAR3/RAR4 archives; install unrar, unar, or 7z"
         )
+    if backend.setup["open_cmd"][0] in ("SEVENZIP_TOOL", "SEVENZIP2_TOOL"):
+        required = set()
+        for info in archive.infolist():
+            if not info.is_file() or info.compress_type == rarfile.RAR_M0:
+                continue
+            if isinstance(archive._file_parser, rarfile.RAR5Parser):
+                required.add("Rar5")
+            elif info.extract_version >= 29:
+                required.add("Rar3")
+            elif info.extract_version >= 20:
+                required.add("Rar2")
+            else:
+                required.add("Rar1")
+        if required:
+            missing = required - sevenzip_decoders(backend)
+            if missing:
+                raise MissingDependencyError(
+                    "selected 7-Zip build lacks RAR decoder(s): " + ", ".join(sorted(missing))
+                    + "; install its RAR codec package, full 7-Zip, unrar, or unar"
+                )
 
 
 def open_rar_member(archive: Any, info: Any, source: Path, backend: Any) -> BinaryIO:

@@ -41,5 +41,6 @@ Grammar/actionlint checks do not establish remote platform execution success.
 
 The sixteen configured installed-wheel CI cases remain pending an authorized
 branch push. See [release procedure](../../docs/releasing.md) for reproduction,
-decoder limitations and the stable-release gates. Nothing has been pushed,
-tagged remotely, published to a package index or released through GitHub.
+decoder limitations and the stable-release gates. At the time these local records were captured, nothing had been pushed or
+published. The branch was subsequently pushed; the first remote CI run is
+documented in the current release procedure. Raw local records remain unchanged.

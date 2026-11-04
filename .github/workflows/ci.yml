@@ -100,7 +100,9 @@ jobs:
         if: always()
         with:
           name: validation-${{ matrix.os }}-${{ matrix.python }}-${{ matrix.dependencies }}
-          path: validation/*
+          path: |
+            validation/result.json
+            validation/result.log
           if-no-files-found: warn
 
   quality:
