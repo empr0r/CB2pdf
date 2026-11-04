@@ -190,3 +190,14 @@ A successful candidate qualifies the implementation; the stable-version wheel
 and source distribution are rebuilt and checked with their own identities.
 The final stable artifact records are retained separately under
 `validation/release-2.0.0` and its corresponding platform run.
+
+## Stable-version qualification
+
+The stable 2.0.0 package version passed the same eighteen jobs in
+[run 41763211877](https://github.com/empr0r/CB2pdf/actions/runs/41763211877),
+which tested commit `1653c35a42880a37add177a0d88cdffc8cfb85f3`.
+The final documentation status cleanup receives another normal workflow run;
+no application or test behavior is changed. The final artifact receipt records
+that run and the exact CI-built wheel/source bytes selected for delivery.
+Publication, a remote tag and default-branch merging remain separate actions
+requiring explicit authorization.

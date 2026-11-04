@@ -1,12 +1,12 @@
 # CB2pdf
 
-**2.0.0 — release preparation.** The rc2 implementation passed all 16 platform/dependency CI configurations. The stable-version artifacts receive a final validation run before publication. See the [release procedure](docs/releasing.md).
+**2.0.0 — validated implementation, publication pending.** All 16 platform/dependency CI configurations passed. The [release procedure](docs/releasing.md) and retained evidence identify the exact builds tested.
 
 Convert CBZ/ZIP and CBR/RAR comic archives into complete, verified PDFs. The default preserves resolution, avoids lossy image recompression, and keeps original archives. Existing outputs are protected unless `--overwrite` is explicitly supplied.
 
 ## Installation
 
-Python 3.11 or newer is required. Fresh installed-wheel tests pass locally on Linux with Python 3.11–3.14, latest dependencies, and the minimum runtime dependencies on Python 3.11. Sixteen CI configurations cover those runtimes plus dependency-floor checks on Linux, Windows and macOS; remote results are pending.
+Python 3.11 or newer is required. Fresh installed-wheel tests pass locally on Linux with Python 3.11–3.14, latest dependencies, and the minimum runtime dependencies on Python 3.11. Sixteen CI configurations cover those runtimes plus dependency-floor checks on Linux, Windows and macOS. Retained release evidence records exact artifact identities and expected backend/renderer skips.
 
 ```sh
 python -m venv .venv
